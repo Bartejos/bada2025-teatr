@@ -8,7 +8,6 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
-import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -20,13 +19,15 @@ public class SecurityConfiguration {
         http
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/", "/index").permitAll()
-                        .anyRequest().authenticated()
+                        .requestMatchers("/resources/static/**").permitAll()
+                        .requestMatchers("/main/**").authenticated()
                 )
                 .formLogin((form) -> form
                         .loginPage("/login")
                         .permitAll()
                 )
                 .logout((logout) -> logout
+                        .logoutUrl("/index")
                         .logoutSuccessUrl("/index")
                         .permitAll()
                 );

@@ -1,4 +1,4 @@
-package bada_project.SpringApplication;
+package com.teatr;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -1,4 +1,4 @@
-package bada_project.SpringApplication;
+package com.teatr;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;

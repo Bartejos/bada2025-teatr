@@ -59,6 +59,26 @@
     </div>
 
   </div>
+  <div align="center">
+    <table border="1" cellpadding="10">
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th>Ulica</th>
+        <th>Miasto</th>
+        <th>Kod pocztowy</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="adres: ${adresList}">
+        <td th:text="${adres.id}">ID</td>
+        <td th:text="${adres.ulica}">Ulica</td>
+        <td th:text="${adres.miasto}">Miasto</td>
+        <td th:text="${adres.kodPocztowy}">Kod pocztowy</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
 </div>
 
 

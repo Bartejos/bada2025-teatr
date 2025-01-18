@@ -43,16 +43,12 @@ public class AppController implements WebMvcConfigurer {
     }
     @RequestMapping(value={"/main_admin"})
     public String showAdminPage(Model model) {
+        List<Adres> adresList = adresDAO.list();
+        model.addAttribute("adresList", adresList);
         return "admin/main_admin";
     }
     @RequestMapping(value={"/main_spectator"})
     public String showUserPage(Model model) {
         return "spectator/main_spectator";
-    }
-    @RequestMapping("/")
-    public String viewHomePage(Model model) {
-        List<Adres> adresList = adresDAO.list();
-        model.addAttribute("adresList", adresList);
-        return "index";
     }
 }

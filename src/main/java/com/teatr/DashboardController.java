@@ -20,8 +20,8 @@ public class DashboardController
         }
         else if
         (request.isUserInRole
-                        ("USER")) {
-            return "redirect:/main_user";
+                        ("SPECTATOR")) {
+            return "redirect:/main_spectator";
         }
         else
         {
@@ -33,8 +33,8 @@ public class DashboardController
     public String showAdminPage(Model model) {
         return "admin/main_admin";
     }
-    @RequestMapping(value={"/main_user"})
+    @RequestMapping(value={"/main_spectator"})
     public String showUserPage(Model model) {
-        return "user/main_user";
+        return "spectator/main_spectator";
     }
 }

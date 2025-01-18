@@ -28,6 +28,7 @@
 	</scm>
 	<properties>
 		<java.version>17</java.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<!-- New adding -->
 		<bootstrap.version>5.3.3</bootstrap.version>
@@ -35,7 +36,24 @@
 		<lombok.version>1.18.2</lombok.version>
 		<commons-validator.version>1.7</commons-validator.version>
 	</properties>
+	<repositories>
+		<repository>
+			<id>oracle</id>
+			<url>https://maven.oracle.com</url>
+		</repository>
+	</repositories>
 	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.oracle.database.jdbc</groupId>
+			<artifactId>ojdbc8</artifactId>
+			<version>19.8.0.0</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/libs/ojdbc8.jar</systemPath>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>

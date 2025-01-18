@@ -19,9 +19,8 @@ public class AdresDAO {
 
     public List<Adres> list() {
         String sql = "SELECT * FROM ADRESY";
-        List<Adres> adresList = jdbcTemplate.query(sql,
+        return jdbcTemplate.query(sql,
                 BeanPropertyRowMapper.newInstance(Adres.class));
-        return adresList;
     }
 
     /* Insert – wstawianie nowego wiersza do bazy */

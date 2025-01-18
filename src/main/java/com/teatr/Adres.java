@@ -1,32 +1,29 @@
 package com.teatr;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
 public class Adres {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int idAdresu;
     private String ulica;
     private String miasto;
     private String kodPocztowy;
 
     @Override
     public String toString() {
-        return "Adres [id=" + id + ", ulica=" + ulica + ", miasto=" + miasto + ", kodPocztowy=" + kodPocztowy + "]";
+        return "Adres [idAdresu=" + idAdresu + ", ulica=" + ulica + ", miasto=" + miasto + ", kodPocztowy=" + kodPocztowy + "]";
     }
 
     // Gettery i Settery
-    public Long getId() {
-        return id;
+    public int getIdAdresu() {
+        return idAdresu;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setIdAdresu(int idAdresu) {
+        this.idAdresu = idAdresu;
     }
 
     public String getUlica() {

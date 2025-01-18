@@ -71,10 +71,10 @@
       </thead>
       <tbody>
       <tr th:each="adres: ${adresList}">
-        <td th:text="${adres.id}">ID</td>
-        <td th:text="${adres.ulica}">Ulica</td>
-        <td th:text="${adres.miasto}">Miasto</td>
-        <td th:text="${adres.kodPocztowy}">Kod pocztowy</td>
+        <td th:text="${adres.getIdAdresu()}">ID</td>
+        <td th:text="${adres.getUlica()}">Ulica</td>
+        <td th:text="${adres.getMiasto()}">Miasto</td>
+        <td th:text="${adres.getKodPocztowy()}">Kod pocztowy</td>
       </tr>
       </tbody>
     </table>

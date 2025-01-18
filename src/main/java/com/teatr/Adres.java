@@ -15,6 +15,11 @@ public class Adres {
     private String miasto;
     private String kodPocztowy;
 
+    @Override
+    public String toString() {
+        return "Adres [id=" + id + ", ulica=" + ulica + ", miasto=" + miasto + ", kodPocztowy=" + kodPocztowy + "]";
+    }
+
     // Gettery i Settery
     public Long getId() {
         return id;

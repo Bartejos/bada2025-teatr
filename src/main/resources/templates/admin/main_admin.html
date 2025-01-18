@@ -45,7 +45,7 @@
   <div class="row">
 
     <div class="col-md-10 mt-5">
-      <form method="post" th:action="@{/logout}">
+      <form method="post" th:action="@{/index}">
         <div class="form-group">
           <label style="font-size:30px" th:inline="text">Welcome <a
                   style="color:lightskyblue; text-transform:capitalize"><b>[[${#authentication.name}]]</b></a>
@@ -58,6 +58,26 @@
       </form>
     </div>
 
+  </div>
+  <div align="center">
+    <table border="1" cellpadding="10">
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th>Ulica</th>
+        <th>Miasto</th>
+        <th>Kod pocztowy</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="adres: ${adresList}">
+        <td th:text="${adres.id}">ID</td>
+        <td th:text="${adres.ulica}">Ulica</td>
+        <td th:text="${adres.miasto}">Miasto</td>
+        <td th:text="${adres.kodPocztowy}">Kod pocztowy</td>
+      </tr>
+      </tbody>
+    </table>
   </div>
 </div>
 

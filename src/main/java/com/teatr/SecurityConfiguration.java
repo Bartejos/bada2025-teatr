@@ -50,7 +50,7 @@ public class SecurityConfiguration {
                 )
                 .logout((logout) -> logout
                         .logoutUrl("/logout") // Ścieżka do wylogowania
-                        .logoutSuccessUrl("/index") // Strona po wylogowaniu
+                        .logoutSuccessUrl("/") // Strona po wylogowaniu
                         .permitAll() // Dostęp dla wszystkich do wylogowania
                 );
 

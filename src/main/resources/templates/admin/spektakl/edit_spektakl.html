@@ -2,7 +2,7 @@
 <html lang="en" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Dodawanie adresu</title>
+  <title>Edycja spektaklu</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
       html, body {
@@ -20,15 +20,15 @@
           flex-grow: 1;
       }
 
+      footer {
+          margin-top: auto;
+      }
+
       .nav-item.active .nav-link {
           color: #fff !important;
           font-weight: bold;
           background-color: rgba(255, 255, 255, 0.1);
           border-radius: 0.25rem;
-      }
-
-      footer {
-          margin-top: auto;
       }
   </style>
 </head>
@@ -51,7 +51,7 @@
           <li class="nav-item" sec:authorize="hasRole('ADMIN')">
             <a class="nav-link" th:href="@{/main_admin}">Home</a>
           </li>
-          <li class="nav-item active" sec:authorize="hasRole('ADMIN')">
+          <li class="nav-item" sec:authorize="hasRole('ADMIN')">
             <a class="nav-link" th:href="@{/main_admin/adres}">Adresy</a>
           </li>
           <li class="nav-item" sec:authorize="hasRole('ADMIN')">
@@ -63,7 +63,7 @@
           <li class="nav-item" sec:authorize="hasRole('ADMIN')">
             <a class="nav-link" th:href="@{/main_admin/teatr}">Teatry</a>
           </li>
-          <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+          <li class="nav-item active" sec:authorize="hasRole('ADMIN')">
             <a class="nav-link" th:href="@{/main_admin/spektakl}">Spektakle</a>
           </li>
         </ul>
@@ -88,58 +88,62 @@
       <div class="col-md-8">
         <div class="card">
           <div class="card-header">
-            <h3 class="text-center mb-0">Dodaj adres</h3>
+            <h3 class="text-center mb-0">Edytuj spektakl</h3>
           </div>
           <div class="card-body">
-            <form action="#" th:action="@{/main_admin/adres/save}" th:object="${adres}" method="post">
+            <form action="#" method="post" th:action="@{/main_admin/spektakl/update}" th:object="${spektakl}">
               <div class="mb-3">
-                <label class="form-label">Ulica:</label>
-                <input type="text"
-                       class="form-control"
-                       th:field="*{ulica}"
-                       maxlength="30"
-                       required
-                       pattern="^[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ\s]+$"
-                       title="Podaj tylko litery (w tym polskie znaki) i spacje">
+                <label class="form-label">ID spektaklu:</label>
+                <input class="form-control" readonly th:field="*{idSpektaklu}" type="text">
               </div>
               <div class="mb-3">
-                <label class="form-label">Numer domu:</label>
-                <input type="text"
-                       class="form-control"
-                       th:field="*{numerDomu}"
-                       maxlength="4"
-                       required>
+                <label class="form-label">Tytuł:</label>
+                <input
+                  class="form-control"
+                  maxlength="40"
+                  pattern="^[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ\s]+$"
+                  required
+                  th:field="*{tytul}"
+                  title="Podaj tylko litery (w tym polskie znaki) i spacje"
+                  type="text">
               </div>
               <div class="mb-3">
-                <label class="form-label">Numer mieszkania:</label>
-                <input type="text"
-                       class="form-control"
-                       th:field="*{numerMieszkania}"
-                       maxlength="3">
+                <label class="form-label">Data rozpoczęcia:</label>
+                <input
+                  class="form-control"
+                  required
+                  th:field="*{dataRozpoczecia}"
+                  type="date">
               </div>
               <div class="mb-3">
-                <label class="form-label">Kod pocztowy:</label>
-                <input type="text"
-                       class="form-control"
-                       th:field="*{kodPocztowy}"
-                       maxlength="6"
-                       pattern="^\d{2}-\d{3}$"
-                       title="Podaj kod pocztowy w formacie 00-000"
-                       required>
+                <label class="form-label">Data zakończenia:</label>
+                <input
+                  class="form-control"
+                  required
+                  th:field="*{dataZakonczenia}"
+                  type="date">
               </div>
               <div class="mb-3">
-                <label class="form-label">Miasto:</label>
-                <input type="text"
-                       class="form-control"
-                       th:field="*{miasto}"
-                       maxlength="30"
-                       required
-                       pattern="^[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ\s]+$"
-                       title="Podaj tylko litery (w tym polskie znaki) i spacje">
+                <label class="form-label">Teatr:</label>
+                <select class="form-control" id="teatrSelect" onchange="filterRooms()" required th:field="*{idTeatru}">
+                  <option th:data-teatr-id="${teatr.idTeatru}"
+                          th:each="teatr: ${teatrList}"
+                          th:text="${teatr.nazwa + ', własciciel: ' + teatr.wlasciciel + ', ID: ' + teatr.idTeatru}"
+                          th:value="${teatr.idTeatru}"></option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Sala:</label>
+                <select class="form-control" id="salaSelect" required th:field="*{idSali}">
+                  <option th:data-teatr-id="${sala.idTeatru}"
+                          th:each="sala: ${salaList}"
+                          th:text="${sala.nazwa + ', ilość miejsc: ' + sala.iloscMiejsc + ', Teatr: ' + sala.idTeatru}"
+                          th:value="${sala.idSali}"></option>
+                </select>
               </div>
               <div class="text-center">
-                <button type="submit" class="btn btn-primary">Zapisz</button>
-                <a th:href="@{/main_admin/adres}" class="btn btn-secondary">Anuluj</a>
+                <button class="btn btn-primary" type="submit">Zapisz</button>
+                <a class="btn btn-secondary" th:href="@{/main_admin/spektakl}">Anuluj</a>
               </div>
             </form>
           </div>
@@ -156,6 +160,30 @@
   </footer>
 </div>
 
+<script>
+    function filterRooms() {
+        const teatrSelect = document.getElementById('teatrSelect');
+        const salaSelect = document.getElementById('salaSelect');
+        const selectedTeatrId = teatrSelect.value;
+
+        // Reset sala select
+        salaSelect.value = '';
+
+        // Hide all options except the placeholder
+        Array.from(salaSelect.options).forEach(option => {
+            if (option.value === '') {
+                option.text = selectedTeatrId ? 'Wybierz salę' : 'Najpierw wybierz teatr';
+                option.hidden = false;
+            } else {
+                const roomTeatrId = option.getAttribute('data-teatr-id');
+                option.hidden = roomTeatrId !== selectedTeatrId;
+            }
+        });
+    }
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', filterRooms);
+</script>
 <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
 <script th:src="@{/js/script.js}"></script>

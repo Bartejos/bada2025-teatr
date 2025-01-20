@@ -2,7 +2,7 @@
 <html lang="en" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8"/>
-  <title>Pracownicy</title>
+  <title>Spektakle</title>
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
@@ -59,13 +59,13 @@
           <li class="nav-item" sec:authorize="hasRole('ADMIN')">
             <a class="nav-link" th:href="@{/main_admin/sala}">Sale</a>
           </li>
-          <li class="nav-item active" sec:authorize="hasRole('ADMIN')">
+          <li class="nav-item" sec:authorize="hasRole('ADMIN')">
             <a class="nav-link" th:href="@{/main_admin/pracownik}">Pracownicy</a>
           </li>
           <li class="nav-item" sec:authorize="hasRole('ADMIN')">
             <a class="nav-link" th:href="@{/main_admin/teatr}">Teatry</a>
           </li>
-          <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+          <li class="nav-item active" sec:authorize="hasRole('ADMIN')">
             <a class="nav-link" th:href="@{/main_admin/spektakl}">Spektakle</a>
           </li>
         </ul>
@@ -88,7 +88,7 @@
   <div class="container mt-5">
     <div class="card">
       <div class="card-header">
-        <h3 class="text-center mb-0">Lista pracowników</h3>
+        <h3 class="text-center mb-0">Lista spektakli</h3>
       </div>
       <div class="card-body">
         <div class="table-responsive">
@@ -96,38 +96,32 @@
             <thead class="table-dark">
             <tr>
               <th>ID</th>
-              <th>Imię</th>
-              <th>Nazwisko</th>
-              <th>Płeć</th>
-              <th>Stanowisko</th>
-              <th>Numer telefonu</th>
-              <th>Adres email</th>
+              <th>Tytuł</th>
+              <th>Data rozpoczęcia</th>
+              <th>Data zakończenia</th>
               <th>ID teatru</th>
-              <th>ID adresu</th>
+              <th>ID sali</th>
               <th>Akcje</th>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="pracownik: ${pracownikList}">
-              <td th:text="${pracownik.getIdPracownika()}"></td>
-              <td th:text="${pracownik.getImie()}"></td>
-              <td th:text="${pracownik.getNazwisko()}"></td>
-              <td th:text="${pracownik.getPlec()}"></td>
-              <td th:text="${pracownik.getStanowisko()}"></td>
-              <td th:text="${pracownik.getNumerTelefonu()}"></td>
-              <td th:text="${pracownik.getAdresEmail()}"></td>
-              <td th:text="${pracownik.getIdTeatru()}"></td>
-              <td th:text="${pracownik.getIdAdresu()}"></td>
+            <tr th:each="spektakl: ${spektaklList}">
+              <td th:text="${spektakl.getIdSpektaklu()}"></td>
+              <td th:text="${spektakl.getTytul()}"></td>
+              <td th:text="${#temporals.format(spektakl.getDataRozpoczecia(), 'dd-MM-yyyy')}"></td>
+              <td th:text="${#temporals.format(spektakl.getDataZakonczenia(), 'dd-MM-yyyy')}"></td>
+              <td th:text="${spektakl.getIdTeatru()}"></td>
+              <td th:text="${spektakl.getIdSali()}"></td>
               <td>
-                <a th:href="@{'/main_admin/pracownik/edit/' + ${pracownik.idPracownika}}" class="btn btn-primary btn-sm">Edytuj</a>
-                <a th:href="@{'/main_admin/pracownik/delete/' + ${pracownik.idPracownika}}" class="btn btn-danger btn-sm ms-2">Usuń</a>
+                <a th:href="@{'/main_admin/spektakl/edit/' + ${spektakl.idSpektaklu}}" class="btn btn-primary btn-sm">Edytuj</a>
+                <a th:href="@{'/main_admin/spektakl/delete/' + ${spektakl.idSpektaklu}}" class="btn btn-danger btn-sm ms-2">Usuń</a>
               </td>
             </tr>
             </tbody>
           </table>
         </div>
         <div class="text-center mt-3">
-          <a href="/main_admin/pracownik/new" class="btn btn-success">Dodaj nowego pracownika</a>
+          <a href="/main_admin/spektakl/new" class="btn btn-success">Dodaj nowy spektakl</a>
         </div>
       </div>
     </div>

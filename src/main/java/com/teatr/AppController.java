@@ -1,6 +1,7 @@
 package com.teatr;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.boot.Banner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
@@ -10,7 +11,10 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.math.BigInteger;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Configuration
 @Controller
@@ -19,12 +23,14 @@ public class AppController implements WebMvcConfigurer {
     private final TeatrDAO teatrDAO;
     private final SalaDAO salaDAO;
     private final PracownikDAO pracownikDAO;
+    private final SpektaklDAO spektaklDAO;
 
-    public AppController(AdresDAO adresDAO, TeatrDAO teatrDAO, SalaDAO salaDAO, PracownikDAO pracownikDAO) {
+    public AppController(AdresDAO adresDAO, TeatrDAO teatrDAO, SalaDAO salaDAO, PracownikDAO pracownikDAO, SpektaklDAO spektaklDAO) {
         this.adresDAO = adresDAO;
         this.teatrDAO = teatrDAO;
         this.salaDAO = salaDAO;
         this.pracownikDAO = pracownikDAO;
+        this.spektaklDAO = spektaklDAO;
     }
 
     public void addViewControllers(ViewControllerRegistry registry) {
@@ -50,6 +56,24 @@ public class AppController implements WebMvcConfigurer {
                 return "redirect:/index";
             }
         }
+    }
+
+    @GetMapping("/")
+    public String showIndexPage(Model model) {
+        List<Spektakl> spektaklList = spektaklDAO.list();
+        List<Teatr> teatrList = teatrDAO.list();
+        List<Sala> salaList = salaDAO.list();
+
+        Map<BigInteger, Teatr> teatrMap = teatrList.stream()
+                        .collect(Collectors.toMap(Teatr::getIdTeatru, teatr -> teatr));
+        Map<BigInteger, Sala> salaMap = salaList.stream()
+                        .collect(Collectors.toMap(Sala::getIdSali, sala -> sala));
+
+        model.addAttribute("spektaklList", spektaklList);
+        model.addAttribute("teatrList", teatrList);
+        model.addAttribute("teatrMap", teatrMap);
+        model.addAttribute("salaMap", salaMap);
+        return "index";
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
@@ -234,6 +258,49 @@ public class AppController implements WebMvcConfigurer {
         return "redirect:/main_admin/pracownik";
     }
 
+    // TABELA SPEKTAKL
+    @RequestMapping("/main_admin/spektakl")
+    public String showSpektaklPage(Model model) {
+        List<Spektakl> spektaklList = spektaklDAO.list();
+        model.addAttribute("spektaklList", spektaklList);
+        return "admin/spektakl/spektakl";
+    }
+    @RequestMapping("/main_admin/spektakl/new")
+    public String showNewSpektaklForm(Model model) {
+        model.addAttribute("spektakl", new Spektakl());
+        model.addAttribute("teatrList", teatrDAO.list());
+        model.addAttribute("salaList", salaDAO.list());
+        return "admin/spektakl/new_spektakl";
+    }
+    @RequestMapping(value = "/main_admin/spektakl/save", method = RequestMethod.POST)
+    public String saveSpektakl(@ModelAttribute("spektakl") Spektakl spektakl, Model model) {
+        spektaklDAO.save(spektakl);
+        return "redirect:/main_admin/spektakl";
+    }
+    @RequestMapping("/main_admin/spektakl/edit/{id}")
+    public ModelAndView showEditSpektaklForm(@PathVariable(name = "id") int id) {
+        ModelAndView mav = new ModelAndView("admin/spektakl/edit_spektakl");
+        Spektakl spektakl = spektaklDAO.get(id);
+        mav.addObject("spektakl", spektakl);
+        mav.addObject("teatrList", teatrDAO.list());
+        mav.addObject("salaList", salaDAO.list());
+        return mav;
+    }
+    @RequestMapping(value = "/main_admin/spektakl/update", method = RequestMethod.POST)
+    public String updateSpektakl(@ModelAttribute("spektakl") Spektakl spektakl, Model model) {
+        spektaklDAO.update(spektakl);
+        return "redirect:/main_admin/spektakl";
+    }
+    @RequestMapping("/main_admin/spektakl/delete/{id}")
+    public String deleteSpektakl(@PathVariable(name = "id") int id, Model model) {
+        try {
+            spektaklDAO.delete(id);
+        } catch (DataIntegrityViolationException e) {
+            model.addAttribute("message", "Nie można usunąć spektaklu, ponieważ jest on powiązany z innymi tabelami.");
+            return "errors/other";
+        }
+        return "redirect:/main_admin/spektakl";
+    }
 
     @RequestMapping(value={"/main_spectator"})
     public String showUserPage(Model model) {

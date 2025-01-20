@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Dodawanie</title>
+</head>
+<body>
+<div align="center">
+  <h1>Dodaj nową salę</h1>
+  <br/>
+  <form action="#" th:action="@{/main_admin/sala/save}" th:object="${sala}" method="post">
+    <table border="1" cellpadding="10">
+      <tr>
+        <td>Nazwa:</td>
+        <td>
+          <input
+            type="text"
+            th:field="*{nazwa}"
+            required
+            pattern="^[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ\s]+$"
+            title="Podaj tylko litery (w tym polskie znaki) i spacje"
+          >
+        </td>
+      </tr>
+      <tr>
+        <td>Ilość miejsc:</td>
+        <td>
+          <input
+            type="number"
+            min="1"
+            th:field="*{iloscMiejsc}"
+            required
+          >
+        </td>
+      </tr>
+      <tr>
+        <td>Szerokość sceny:</td>
+        <td>
+          <input
+            type="number"
+            step="0.1"
+            min="0.1"
+            max="99.9"
+            th:field="*{szerokoscSceny}"
+            required
+          >
+        </td>
+      </tr>
+      <tr>
+        <td>Teatr:</td>
+        <td>
+          <select th:field="*{idTeatru}" required>
+            <option th:value="${teatrList[0].idTeatru}" selected>Wybierz teatr</option>
+            <option th:each="teatr: ${teatrList}"
+                    th:value="${teatr.idTeatru}"
+                    th:text="${teatr.nazwa + ', własciciel: ' + teatr.wlasciciel}">
+            </option>
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <button type="submit">Dodaj</button>
+        </td>
+      </tr>
+    </table>
+  </form>
+</div>
+</body>
+</html>

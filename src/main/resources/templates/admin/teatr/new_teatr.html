@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Dodawanie</title>
+</head>
+<body>
+<div align="center">
+  <h1>Dodaj nowy teatr</h1>
+  <br/>
+  <form action="#" th:action="@{/main_admin/teatr/save}" th:object="${teatr}" method="post">
+    <table border="1" cellpadding="10">
+      <tr>
+        <td>Nazwa:</td>
+        <td>
+          <input
+            type="text"
+            th:field="*{nazwa}"
+            maxlength="30"
+            required
+            pattern="^[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ\s]+$"
+            title="Podaj tylko litery (w tym polskie znaki) i spacje"
+          >
+        </td>
+      </tr>
+      <tr>
+        <td>Właściciel:</td>
+        <td>
+          <input
+            type="text"
+            th:field="*{wlasciciel}"
+            maxlength="50"
+            required
+            pattern="^[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ\s]+$"
+            title="Podaj tylko litery (w tym polskie znaki) i spacje"
+          >
+        </td>
+      </tr>
+      <tr>
+        <td>Godziny otwarcia:</td>
+        <td>
+          <input
+            type="text"
+            th:field="*{godzinyOtwarcia}"
+            maxlength="50"
+            required
+          >
+        </td>
+      </tr>
+      <tr>
+        <td>Data założenia:</td>
+        <td>
+          <input
+            type="date"
+            th:field="*{dataZalozenia}"
+          >
+        </td>
+      </tr>
+      <tr>
+        <td>Adres email:</td>
+        <td>
+          <input
+            type="email"
+            th:field="*{adresEmail}"
+            maxlength="70"
+          >
+        </td>
+      </tr>
+      <tr>
+        <td>Adres:</td>
+        <td>
+          <select th:field="*{idAdresu}" required>
+            <option th:value="${adresList[0].idAdresu}" selected>Wybierz adres</option>
+            <option th:each="adres: ${adresList}"
+                    th:value="${adres.idAdresu}"
+                    th:text="${adres.ulica + ' ' + adres.numerDomu + '/' + adres.numerMieszkania + ', ' + adres.kodPocztowy + ' ' + adres.miasto}">
+            </option>
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <button type="submit">Dodaj</button>
+        </td>
+      </tr>
+    </table>
+  </form>
+</div>
+</body>
+</html>

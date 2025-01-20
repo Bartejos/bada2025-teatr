@@ -39,7 +39,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/", "/index", "/resources/static/**", "/webjars/**", "/css/**", "/js/**", "/images/**", "/icons/**").permitAll() // Publiczne zasoby
                         .requestMatchers("/main").authenticated() // Autoryzacja wymagana
-                        .requestMatchers("/main_admin").hasRole("ADMIN") // Dostęp tylko dla administratorów
+                        .requestMatchers("/main_admin/**").hasRole("ADMIN") // Dostęp tylko dla administratorów
                         .requestMatchers("/main_spectator").hasRole("SPECTATOR") // Dostęp tylko dla widzów
                         .anyRequest().authenticated() // Wszystkie inne ścieżki wymagają uwierzytelnienia
                 )

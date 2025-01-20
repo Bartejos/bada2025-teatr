@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Dodawanie</title>
+</head>
+<body>
+<div align="center">
+  <h1>Dodaj nowego pracownika</h1>
+  <br/>
+  <form action="#" th:action="@{/main_admin/pracownik/save}" th:object="${pracownik}" method="post">
+    <table border="1" cellpadding="10">
+      <tr>
+        <td>Imię:</td>
+        <td>
+          <input
+            type="text"
+            th:field="*{imie}"
+            maxlength="20"
+            required
+            pattern="^[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ\s]+$"
+            title="Podaj tylko litery (w tym polskie znaki) i spacje"
+          >
+        </td>
+      </tr>
+      <tr>
+        <td>Nazwisko:</td>
+        <td>
+          <input
+            type="text"
+            th:field="*{nazwisko}"
+            maxlength="20"
+            required
+            pattern="^[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ\s-]+$"
+            title="Podaj tylko litery (w tym polskie znaki) i spacje"
+          >
+        </td>
+      </tr>
+      <tr>
+        <td>Płeć:</td>
+        <td>
+          <select th:field="*{plec}" required>
+            <option value="M" selected>Wybierz płeć</option>
+            <option value="M">Mężczyzna</option>
+            <option value="K">Kobieta</option>
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td>Stanowisko:</td>
+        <td>
+          <select th:field="*{stanowisko}" required>
+            <option value="Reżyser" selected>Wybierz stanowisko</option>
+            <option value="Reżyser">Reżyser</option>
+            <option value="Aktor">Aktor</option>
+            <option value="Scenograf">Scenograf</option>
+            <option value="Kostiumograf">Kostiumograf</option>
+            <option value="Technik">Technik</option>
+            <option value="Oświetleniowiec">Oświetleniowiec</option>
+            <option value="Muzyk">Muzyk</option>
+            <option value="Dyrektor">Dyrektor</option>
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td>Numer telefonu:</td>
+        <td>
+          <input
+            type="text"
+            th:field="*{numerTelefonu}"
+            maxlength="12"
+            required
+            pattern="^(\+\d{2})?\d{9}$"
+            title="Podaj numer telefonu w formacie 123456789 lub +48123456789"
+          >
+        </td>
+      </tr>
+      <tr>
+        <td>Adres email:</td>
+        <td>
+          <input
+            type="email"
+            th:field="*{adresEmail}"
+            maxlength="70"
+            required
+          >
+        </td>
+      </tr>
+      <tr>
+        <td>Teatr:</td>
+        <td>
+          <select th:field="*{idTeatru}" required>
+            <option th:value="${teatrList[0].idTeatru}" selected>Wybierz teatr</option>
+            <option th:each="teatr: ${teatrList}"
+                    th:value="${teatr.idTeatru}"
+                    th:text="${teatr.nazwa + ', własciciel: ' + teatr.wlasciciel}">
+            </option>
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td>Adres:</td>
+        <td>
+          <select th:field="*{idAdresu}" required>
+            <option th:value="${adresList[0].idAdresu}" selected>Wybierz adres</option>
+            <option th:each="adres: ${adresList}"
+                    th:value="${adres.idAdresu}"
+                    th:text="${adres.ulica + ' ' + adres.numerDomu + '/' + adres.numerMieszkania + ', ' + adres.kodPocztowy + ' ' + adres.miasto}">
+            </option>
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2"><button type="submit">Dodaj</button></td>
+      </tr>
+    </table>
+  </form>
+</div>
+</body>
+</html>

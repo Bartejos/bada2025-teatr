@@ -85,13 +85,6 @@ public class AppController implements WebMvcConfigurer {
         return mav;
     }
 
-    // WIDOKI ADMINA
-    @RequestMapping("/main_admin")
-    public String showAdminPage(Model model) {
-        List<Adres> adresList = adresDAO.list();
-        model.addAttribute("adresList", adresList);
-        return "admin/main_admin";
-    }
     // TABELA ADRES
     @RequestMapping("/main_admin/adres")
     public String showAdresPage(Model model) {
@@ -142,7 +135,12 @@ public class AppController implements WebMvcConfigurer {
     @RequestMapping("/main_admin/teatr/new")
     public String showNewTeatrForm(Model model) {
         model.addAttribute("teatr", new Teatr());
-        model.addAttribute("adresList", adresDAO.list());
+        List<Adres> adresList = adresDAO.list();
+        if (adresList == null || adresList.isEmpty()) {
+            model.addAttribute("message", "Nie można dodać teatru, ponieważ jest brak adresów do przypisania w bazie danych.");
+            return "errors/other";
+        }
+        model.addAttribute("adresList", adresList);
         return "admin/teatr/new_teatr";
     }
     @RequestMapping(value = "/main_admin/teatr/save", method = RequestMethod.POST)
@@ -184,7 +182,12 @@ public class AppController implements WebMvcConfigurer {
     @RequestMapping("/main_admin/sala/new")
     public String showNewSalaForm(Model model) {
         model.addAttribute("sala", new Sala());
-        model.addAttribute("teatrList", teatrDAO.list());
+        List<Teatr> teatrList = teatrDAO.list();
+        if (teatrList == null || teatrList.isEmpty()) {
+            model.addAttribute("message", "Nie można dodać sali, ponieważ nie istnieje żaden teatr do przypisania w bazie danych.");
+            return "errors/other";
+        }
+        model.addAttribute("teatrList", teatrList);
         return "admin/sala/new_sala";
     }
     @RequestMapping(value = "/main_admin/sala/save", method = RequestMethod.POST)
@@ -226,8 +229,18 @@ public class AppController implements WebMvcConfigurer {
     @RequestMapping("/main_admin/pracownik/new")
     public String showNewPracownikForm(Model model) {
         model.addAttribute("pracownik", new Pracownik());
-        model.addAttribute("teatrList", teatrDAO.list());
-        model.addAttribute("adresList", adresDAO.list());
+        List<Teatr> teatrList = teatrDAO.list();
+        if (teatrList == null || teatrList.isEmpty()) {
+            model.addAttribute("message", "Nie można dodać pracownika, ponieważ nie istnieje żaden teatr do przypisania w bazie danych.");
+            return "errors/other";
+        }
+        List<Adres> adresList = adresDAO.list();
+        if (adresList == null || adresList.isEmpty()) {
+            model.addAttribute("message", "Nie można dodać pracownika, ponieważ nie istnieje żaden adres do przypisania w bazie danych.");
+            return "errors/other";
+        }
+        model.addAttribute("teatrList", teatrList);
+        model.addAttribute("adresList", adresList);
         return "admin/pracownik/new_pracownik";
     }
     @RequestMapping(value = "/main_admin/pracownik/save", method = RequestMethod.POST)
@@ -270,8 +283,18 @@ public class AppController implements WebMvcConfigurer {
     @RequestMapping("/main_admin/spektakl/new")
     public String showNewSpektaklForm(Model model) {
         model.addAttribute("spektakl", new Spektakl());
-        model.addAttribute("teatrList", teatrDAO.list());
-        model.addAttribute("salaList", salaDAO.list());
+        List<Teatr> teatrList = teatrDAO.list();
+        if (teatrList == null || teatrList.isEmpty()) {
+            model.addAttribute("message", "Nie można dodać spektaklu, ponieważ nie istnieje żaden teatr do przypisania w bazie danych.");
+            return "errors/other";
+        }
+        List<Sala> salaList = salaDAO.list();
+        if (salaList == null || salaList.isEmpty()) {
+            model.addAttribute("message", "Nie można dodać spektaklu, ponieważ nie istnieje żadna sala do przypisania w bazie danych.");
+            return "errors/other";
+        }
+        model.addAttribute("teatrList", teatrList);
+        model.addAttribute("salaList", salaList);
         return "admin/spektakl/new_spektakl";
     }
     @RequestMapping(value = "/main_admin/spektakl/save", method = RequestMethod.POST)

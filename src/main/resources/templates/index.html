@@ -196,7 +196,6 @@
         </div>
         <div class="col-md-4">
           <input class="form-control" id="dateFilter"
-                 th:min="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}"
                  type="date">
         </div>
         <div class="col-md-4">
@@ -259,14 +258,17 @@
   const teatrFilter = document.getElementById('teatrFilter');
   const dateFilter = document.getElementById('dateFilter');
 
-  // Function to filter spektakle
-  function filterSpektakle() {
-    const selectedTeatrId = teatrFilter.value;
-    const selectedDate = dateFilter.value;
+    // Function to filter spektakle
+    function filterSpektakle() {
+        const selectedTeatrId = teatrFilter.value;
+        const selectedDate = dateFilter.value;
 
-    // Get all spektakl cards
-    const spektakleCards = document.querySelectorAll('.spektakl-card').forEach(card => {
-      let showCard = true;
+        // Licznik widocznych kart
+        let visibleCardCount = 0;
+
+        // Get all spektakl cards
+        document.querySelectorAll('.spektakl-card').forEach(card => {
+            let showCard = true;
 
       // Filter by theater
       if (selectedTeatrId) {
@@ -283,24 +285,31 @@
         const spektaklDate = parseDate(dateBadge.textContent);
         const filterDate = new Date(selectedDate);
 
-        // Check if the spektakl date matches the filter date
-        if (spektaklDate.getDate() !== filterDate.getDate()) {
-          showCard = false;
+                // Check if the spektakl date matches the filter date
+                if (
+                    spektaklDate.getFullYear() !== filterDate.getFullYear() ||
+                    spektaklDate.getMonth() !== filterDate.getMonth() ||
+                    spektaklDate.getDate() !== filterDate.getDate()
+                ) {
+                    showCard = false;
+                }
+            }
+
+            // Show/hide card based on filters
+            card.style.display = showCard ? 'block' : 'none';
+
+            // Increment visible card count
+            if (showCard) {
+                visibleCardCount++;
+            }
+        });
+
+        // Show/hide "no results" message
+        const noResultsMessage = document.querySelector('#no-results-message');
+        if (noResultsMessage) {
+            noResultsMessage.style.display = visibleCardCount === 0 ? 'block' : 'none';
         }
-      }
-
-      // Show/hide card based on filters
-      card.style.display = showCard ? 'block' : 'none';
-    });
-
-    // Show/hide "no results" message
-    const noResultsMessage = document.querySelector('#no-results-message');
-    const visibleCards = document.querySelectorAll('.spektakl-card[style="display: block"]');
-
-    if (noResultsMessage) {
-      noResultsMessage.style.display = visibleCards.length === 0 ? 'block' : 'none';
     }
-  }
 
   // Helper function to parse date from Polish format (dd.MM.yyyy)
   function parseDate(dateStr) {

@@ -1,106 +1,337 @@
 <!DOCTYPE HTML>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html
+  lang="pl"
+  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+  xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8"/>
-    <title>Welcome Page</title>
+  <meta charset="UTF-8"/>
+  <title>Teatr Główny - Strona Główna</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+      .nav-item.active .nav-link {
+          color: #fff !important;
+          font-weight: bold;
+          background-color: rgba(255, 255, 255, 0.1);
+          border-radius: 0.25rem;
+      }
 
+      .header-banner {
+          background-image: url('https://d26oc3sg82pgk3.cloudfront.net/files/media/edit/image/53890/article_featured%403x.jpg');
+          background-size: cover;
+          background-position: center;
+          color: white;
+          text-align: center;
+          padding: 100px 20px;
+      }
 
+      .header-banner h1 {
+          font-size: 3.5rem;
+          text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+      }
+
+      .header-banner p {
+          font-size: 1.5rem;
+          text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+      }
+
+      .card img {
+          height: 200px;
+          object-fit: cover;
+      }
+
+      .spektakl-card {
+          transition: transform 0.2s;
+          margin-bottom: 1.5rem;
+      }
+
+      .spektakl-card:hover {
+          transform: translateY(-5px);
+      }
+
+      .date-badge {
+          position: absolute;
+          top: 10px;
+          right: 10px;
+          background-color: rgba(0, 0, 0, 0.7);
+          color: white;
+          padding: 0.5rem;
+          border-radius: 4px;
+      }
+
+      .teatr-badge {
+          position: absolute;
+          top: 10px;
+          left: 10px;
+          background-color: rgba(0, 0, 0, 0.7);
+          color: white;
+          padding: 0.5rem;
+          border-radius: 4px;
+      }
+  </style>
 </head>
-
-<!-- <body th:style="'background: url(/assets/img/img.png) no-repeat center center fixed;'"> -->
-
-
-<!--<style th:inline="text">-->
-<!--    body{-->
-<!--        background: url([[@{/assets/img/img.png}]])-->
-<!--        no-repeat center center fixed;-->
-<!--    }-->
-<!--</style>-->
-
+<body>
 
 <!-- Navigation -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
-    <div class="container">
-        <a class="navbar-brand" href="/">BDBT Spring Boot Project - Part II</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
-                aria-controls="navbarResponsive"
-                aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarResponsive">
-            <ul class="navbar-nav ml-auto">
-
-                <li class="nav-item active">
-                    <a class="nav-link" href="#">Home
-                        <span class="sr-only">(current)</span>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/main}">Main</a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/main}">Login</a></a>
-                </li>
-
-            </ul>
-        </div>
+  <div class="container">
+    <a class="navbar-brand" href="/">Teatr Główny</a>
+    <button aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler"
+            data-bs-target="#navbarResponsive"
+            data-bs-toggle="collapse" type="button">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item"><a class="nav-link" href="/">Strona Główna</a></li>
+        <li class="nav-item" sec:authorize="hasRole('ADMIN')"><a class="nav-link" th:href="@{/main_admin}">Panel
+          Admina</a></li>
+        <li class="nav-item"><a class="nav-link" href="#o-nas">O Nas</a></li>
+        <li class="nav-item"><a class="nav-link" href="#aktualnosci">Aktualności</a></li>
+        <li class="nav-item"><a class="nav-link" href="#repertuar">Repertuar</a></li>
+      </ul>
+      <ul class="navbar-nav">
+        <li class="nav-item" sec:authorize="!isAuthenticated()"><a class="nav-link" th:href="@{/login}">Zaloguj się</a>
+        </li>
+        <li class="nav-item" sec:authorize="isAuthenticated()">
+          <form class="d-inline" method="post" th:action="@{/logout}">
+            <button class="btn btn-link nav-link" type="submit">Wyloguj się</button>
+          </form>
+        </li>
+      </ul>
     </div>
+  </div>
 </nav>
 
-
-<!--Using images in page    -->
-<!-- <img th:src="@{/assets/img/img.png}" alt="Image" class="img-fluid"> -->
-
-
-<div class="container">
-    <div class="row">
-        <div class="col-md-10 mt-5">
-
-            <label style="font-size:30px">Welcome to the home page!</label>
-            <div style="font-size:20px">If you want to login, click <a th:href="@{/main}"><b>here</b></a> or in the
-                upper right corner.
-            </div>
-
-        </div>
-    </div>
+<!-- Header -->
+<div class="header-banner">
+  <h1>Witamy w Teatrze Głównym</h1>
+  <p>Przeżyj niezapomniane chwile na deskach naszego teatru</p>
+  <a class="btn btn-primary btn-lg mt-3" href="#repertuar">Sprawdź Repertuar</a>
 </div>
 
-<!--<div align="center">
-    <h1>Sales Records</h1>
+<!-- Main Content -->
+<div class="container mt-5">
+  <!-- O nas -->
+  <section class="my-5" id="o-nas">
+    <div class="row">
+      <div class="col-md-6">
+        <img alt="Scena teatru"
+             class="img-fluid rounded"
+             src="https://upload.wikimedia.org/wikipedia/commons/7/71/Palais_Garnier._December_5%2C_2010.jpg">
+      </div>
+      <div class="col-md-6">
+        <h2>O Nas</h2>
+        <p>Teatr Główny to miejsce, gdzie sztuka spotyka się z pasją. Jesteśmy jednym z najbardziej prestiżowych teatrów
+          w Polsce, oferującym spektakle, które poruszają serca i umysły. Zapraszamy na niezapomniane wieczory pełne
+          emocji.</p>
+      </div>
+    </div>
+  </section>
 
-    <table border="1" cellpadding="10">
+  <!-- Aktualności -->
+  <section class="my-5" id="aktualnosci">
+    <h2>Aktualności</h2>
+    <div class="row">
+      <div class="col-md-4">
+        <div class="card">
+          <img
+            alt="Wydarzenie 1"
+            class="card-img-top"
+            src="https://images.unsplash.com/photo-1503095396549-807759245b35?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dGhlYXRyZXxlbnwwfHwwfHx8MA%3D%3D">
+          <div class="card-body">
+            <h5 class="card-title">Nowy sezon teatralny</h5>
+            <p class="card-text">Rozpoczynamy nowy sezon spektakli! Zobacz, co przygotowaliśmy na nadchodzące
+              miesiące.</p>
+            <a class="btn btn-primary" href="#">Czytaj więcej</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card">
+          <img
+            alt="Wydarzenie 2"
+            class="card-img-top"
+            src="https://ca-times.brightspotcdn.com/dims4/default/3d8a38a/2147483647/strip/false/crop/6720x4480+0+0/resize/1486x991!/quality/75/?url=https%3A%2F%2Fcalifornia-times-brightspot.s3.amazonaws.com%2Fb8%2F49%2F512e26004d0fbf25eca3ff481d91%2F950937-et-elysian-theater-revival-01.FO.jpg">
+          <div class="card-body">
+            <h5 class="card-title">Warsztaty aktorskie</h5>
+            <p class="card-text">Zapraszamy na warsztaty aktorskie dla młodych talentów. Rozwiń swoje umiejętności
+              sceniczne!</p>
+            <a class="btn btn-primary" href="#">Czytaj więcej</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card">
+          <img alt="Wydarzenie 3" class="card-img-top"
+               src="https://www.suu.edu/blog/images/2019/2019-11-bfa-vs-ba-theater.jpg">
+          <div class="card-body">
+            <h5 class="card-title">Wieczór z komedią</h5>
+            <p class="card-text">Już w ten piątek zapraszamy na wieczór pełen śmiechu i dobrej zabawy. Bilety w
+              sprzedaży!</p>
+            <a class="btn btn-primary" href="#">Czytaj więcej</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Item Name</th>
-            <th>Quantity</th>
-            <th>Amount</th>
-            <th>Action</th>
+  <!-- Repertuar -->
+  <section class="my-5" id="repertuar">
+    <div class="container">
+      <h2 class="text-center mb-4">Repertuar</h2>
 
-        </tr>
-        </thead>
+      <!-- Filtry -->
+      <div class="row mb-4">
+        <div class="col-md-4">
+          <select class="form-select" id="teatrFilter">
+            <option value="">Wszystkie teatry</option>
+            <!-- Używamy teatrów z listy spektakli -->
+            <option th:each="teatr : ${teatrList}"
+                    th:text="${teatr.nazwa}"
+                    th:value="${teatr.idTeatru}">
+            </option>
+          </select>
+        </div>
+        <div class="col-md-4">
+          <input class="form-control" id="dateFilter"
+                 th:min="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}"
+                 type="date">
+        </div>
+        <div class="col-md-4">
+          <button class="btn btn-primary w-100" onclick="resetFilters()">Resetuj filtry</button>
+        </div>
+      </div>
 
-        <tbody>
-        <tr th:each="sale : ${listSale}">
-            <td th:text="${sale.id}">ID</td>
-            <td th:text="${sale.item}">Item Name</td>
-            <td th:text="${sale.quantity}">Quantity</td>
-            <td th:text="${sale.amount}">Amount</td>
-        </tr>
-        </tbody>
+      <!-- Lista spektakli -->
+      <div class="row">
+        <div class="col-md-6 col-lg-4" th:each="spektakl : ${spektaklList}">
+          <div class="card spektakl-card h-100">
+            <div class="position-relative">
+              <!-- Możesz dodać domyślne zdjęcie dla spektakli -->
+              <img alt="Spektakl" class="card-img-top" src="https://www.svgrepo.com/show/359893/theatre.svg">
+              <div class="date-badge" th:text="${#temporals.format(spektakl.dataRozpoczecia, 'dd.MM.yyyy')}">Data</div>
+              <div class="teatr-badge"
+                   th:data-teatr-id="${spektakl.idTeatru}"
+                   th:text="${teatrMap.get(spektakl.idTeatru)?.nazwa ?: 'Nieznany teatr'}">
+                Nazwa teatru
+              </div>
+            </div>
+            <div class="card-body">
+              <h5 class="card-title" th:text="${spektakl.tytul}">Tytuł spektaklu</h5>
+              <p class="card-text">
+                Data zakończenia: <span th:text="${#temporals.format(spektakl.dataZakonczenia, 'dd.MM.yyyy')}">Data zakończenia</span>
+              </p>
+              <p class="card-text">
+                <!-- Pobieramy dane sali z mapy -->
+                <span th:with="sala=${salaMap.get(spektakl.idSali)}">
+                Sala: <span th:text="${sala?.nazwa ?: 'Nieznana sala'}"></span>
+                <br/>
+                Ilość miejsc: <span th:text="${sala?.iloscMiejsc ?: 'N/A'}"></span>
+              </span>
+              </p>
+            </div>
+            <div class="card-footer bg-transparent border-top-0">
+              <a class="btn btn-primary w-100" href="#">Zarezerwuj bilet</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Komunikat gdy brak spektakli -->
+      <div class="text-center py-5" id="no-results-message" style="display: none;">
+        <h4>Brak dostępnych spektakli dla wybranych kryteriów</h4>
+        <p>Spróbuj zmienić kryteria wyszukiwania</p>
+      </div>
+    </div>
+  </section>
+</div>
 
-    </table>
+<!-- Footer -->
+<footer class="bg-dark text-light py-3">
+  <div class="container text-center">
+    <p>© 2025 Teatr Główny. Wszelkie prawa zastrzeżone.</p>
+  </div>
+</footer>
 
-</div>-->
+<script>
+    // Get filter elements
+    const teatrFilter = document.getElementById('teatrFilter');
+    const dateFilter = document.getElementById('dateFilter');
 
+    // Function to filter spektakle
+    function filterSpektakle() {
+        const selectedTeatrId = teatrFilter.value;
+        const selectedDate = dateFilter.value;
+
+        // Get all spektakl cards
+        const spektakleCards = document.querySelectorAll('.spektakl-card').forEach(card => {
+            let showCard = true;
+
+            // Filter by theater
+            if (selectedTeatrId) {
+                const teatrBadge = card.querySelector('.teatr-badge');
+                const teatrId = teatrBadge.getAttribute('data-teatr-id');
+                if (teatrId !== selectedTeatrId) {
+                    showCard = false;
+                }
+            }
+
+            // Filter by date
+            if (selectedDate) {
+                const dateBadge = card.querySelector('.date-badge');
+                const spektaklDate = parseDate(dateBadge.textContent);
+                const filterDate = new Date(selectedDate);
+
+                // Check if the spektakl date matches the filter date
+                if (spektaklDate.getDate() !== filterDate.getDate()) {
+                    showCard = false;
+                }
+            }
+
+            // Show/hide card based on filters
+            card.style.display = showCard ? 'block' : 'none';
+        });
+
+        // Show/hide "no results" message
+        const noResultsMessage = document.querySelector('#no-results-message');
+        const visibleCards = document.querySelectorAll('.spektakl-card[style="display: block"]');
+
+        if (noResultsMessage) {
+            noResultsMessage.style.display = visibleCards.length === 0 ? 'block' : 'none';
+        }
+    }
+
+    // Helper function to parse date from Polish format (dd.MM.yyyy)
+    function parseDate(dateStr) {
+        const [day, month, year] = dateStr.split('.');
+        return new Date(year, month - 1, day);
+    }
+
+    // Function to reset filters
+    function resetFilters() {
+        teatrFilter.value = '';
+        dateFilter.value = '';
+
+        // Show all cards
+        document.querySelectorAll('.spektakl-card').forEach(card => {
+            card.style.display = 'block';
+        });
+
+        // Hide no results message
+        const noResultsMessage = document.querySelector('#no-results-message');
+        if (noResultsMessage) {
+            noResultsMessage.style.display = 'none';
+        }
+    }
+
+    // Add event listeners
+    teatrFilter.addEventListener('change', filterSpektakle);
+    dateFilter.addEventListener('change', filterSpektakle);
+</script>
 
 <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
+<script th:src="@{/js/script.js}"></script>
 
 </body>
 </html>

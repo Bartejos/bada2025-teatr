@@ -4,10 +4,18 @@
       xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8"/>
-  <title>Error Page</title>
+  <title>Sale</title>
+
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-      /* Flexbox for footer at bottom */
+      .nav-item.active .nav-link {
+          color: #fff !important;
+          font-weight: bold;
+          background-color: rgba(255, 255, 255, 0.1);
+          border-radius: 0.25rem;
+      }
+
+      /* Ensure that the content fills the available space */
       html, body {
           height: 100%;
       }
@@ -42,7 +50,7 @@
         <li class="nav-item" sec:authorize="hasRole('ADMIN')">
           <a class="nav-link" th:href="@{/main_admin/adres}">Adresy</a>
         </li>
-        <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+        <li class="nav-item active" sec:authorize="hasRole('ADMIN')">
           <a class="nav-link" th:href="@{/main_admin/sala}">Sale</a>
         </li>
         <li class="nav-item" sec:authorize="hasRole('ADMIN')">
@@ -71,16 +79,42 @@
   </div>
 </nav>
 
-<div class="container content">
-  <div class="row">
-    <div class="col-md-4 mt-5">
-      <form method="post" th:action="@{/index}">
-        <div class="form-group">
-          <div><b><p style="font-size:30px">Error</p></b></div>
-          <div><p style="font-size:24px">500 - Internal Server Error</p></div>
-        </div>
-        <button class="btn btn-primary" type="submit">Powrót do strony głównej</button>
-      </form>
+<div class="container mt-5 content">
+  <div class="card">
+    <div class="card-header">
+      <h3 class="text-center mb-0">Lista sal</h3>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-striped table-hover">
+          <thead class="table-dark">
+          <tr>
+            <th>ID</th>
+            <th>Nazwa</th>
+            <th>Ilość miejsc</th>
+            <th>Szerokość sceny</th>
+            <th>ID teatru</th>
+            <th>Akcje</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="sala: ${salaList}">
+            <td th:text="${sala.getIdSali()}"></td>
+            <td th:text="${sala.getNazwa()}"></td>
+            <td th:text="${sala.getIloscMiejsc()}"></td>
+            <td th:text="${sala.getSzerokoscSceny()}"></td>
+            <td th:text="${sala.getIdTeatru()}"></td>
+            <td>
+              <a th:href="@{'/main_admin/sala/edit/' + ${sala.idSali}}" class="btn btn-primary btn-sm">Edytuj</a>
+              <a th:href="@{'/main_admin/sala/delete/' + ${sala.idSali}}" class="btn btn-danger btn-sm ms-2">Usuń</a>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="text-center mt-3">
+        <a href="/main_admin/sala/new" class="btn btn-success">Dodaj nową salę</a>
+      </div>
     </div>
   </div>
 </div>
@@ -88,7 +122,7 @@
 <!-- Footer -->
 <footer class="bg-dark text-light py-3">
   <div class="container text-center">
-    <p>© 2025 Teatr Główny. Wszelkie prawa zastrzeżone.</p>
+    <p>© 2025 Teatr Główny. Panel administracyjny.</p>
   </div>
 </footer>
 

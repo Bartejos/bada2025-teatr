@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Edycja adresu</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+      html, body {
+          height: 100%;
+          margin: 0;
+      }
+
+      .content-wrapper {
+          min-height: 100%;
+          display: flex;
+          flex-direction: column;
+      }
+
+      .container {
+          flex-grow: 1;
+      }
+
+      .nav-item.active .nav-link {
+          color: #fff !important;
+          font-weight: bold;
+          background-color: rgba(255, 255, 255, 0.1);
+          border-radius: 0.25rem;
+      }
+
+      footer {
+          margin-top: auto;
+      }
+  </style>
+</head>
+<body>
+
+<!-- Content Wrapper -->
+<div class="content-wrapper">
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
+    <div class="container">
+      <a class="navbar-brand" href="/">Teatr Główny</a>
+      <button aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler"
+              data-bs-target="#navbarResponsive"
+              data-bs-toggle="collapse" type="button">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <!-- Menu tylko dla admina -->
+          <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+            <a class="nav-link" th:href="@{/main_admin}">Home</a>
+          </li>
+          <li class="nav-item active" sec:authorize="hasRole('ADMIN')">
+            <a class="nav-link" th:href="@{/main_admin/adres}">Adresy</a>
+          </li>
+          <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+            <a class="nav-link" th:href="@{/main_admin/sala}">Sale</a>
+          </li>
+          <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+            <a class="nav-link" th:href="@{/main_admin/pracownik}">Pracownicy</a>
+          </li>
+          <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+            <a class="nav-link" th:href="@{/main_admin/teatr}">Teatry</a>
+          </li>
+          <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+            <a class="nav-link" th:href="@{/main_admin/spektakl}">Spektakle</a>
+          </li>
+        </ul>
+
+        <!-- Przyciski logowania/wylogowania -->
+        <ul class="navbar-nav">
+          <li class="nav-item" sec:authorize="!isAuthenticated()">
+            <a class="nav-link" th:href="@{/login}">Zaloguj się</a>
+          </li>
+          <li class="nav-item" sec:authorize="isAuthenticated()">
+            <form class="d-inline" method="post" th:action="@{/logout}">
+              <button class="btn btn-link nav-link" onclick="successfullyLogout()" type="submit">Wyloguj się</button>
+            </form>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="text-center mb-0">Edytuj adres</h3>
+          </div>
+          <div class="card-body">
+            <form action="#" th:action="@{/main_admin/adres/update}" th:object="${adres}" method="post">
+              <div class="mb-3">
+                <label class="form-label">ID adresu:</label>
+                <input type="text" class="form-control" th:field="*{idAdresu}" readonly>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Ulica:</label>
+                <input type="text"
+                       class="form-control"
+                       th:field="*{ulica}"
+                       maxlength="30"
+                       required
+                       pattern="^[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ\s]+$"
+                       title="Podaj tylko litery (w tym polskie znaki) i spacje">
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Numer domu:</label>
+                <input type="text"
+                       class="form-control"
+                       th:field="*{numerDomu}"
+                       maxlength="4"
+                       required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Numer mieszkania:</label>
+                <input type="text"
+                       class="form-control"
+                       th:field="*{numerMieszkania}"
+                       maxlength="3">
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Kod pocztowy:</label>
+                <input type="text"
+                       class="form-control"
+                       th:field="*{kodPocztowy}"
+                       maxlength="6"
+                       pattern="^\d{2}-\d{3}$"
+                       title="Podaj kod pocztowy w formacie 00-000"
+                       required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Miasto:</label>
+                <input type="text"
+                       class="form-control"
+                       th:field="*{miasto}"
+                       maxlength="30"
+                       required
+                       pattern="^[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ\s]+$"
+                       title="Podaj tylko litery (w tym polskie znaki) i spacje">
+              </div>
+              <div class="text-center">
+                <button type="submit" class="btn btn-primary">Zapisz</button>
+                <a th:href="@{/main_admin/adres}" class="btn btn-secondary">Anuluj</a>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-dark text-light py-3">
+    <div class="container text-center">
+      <p>© 2025 Teatr Główny. Panel administracyjny.</p>
+    </div>
+  </footer>
+</div>
+
+<script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
+<script th:src="@{/js/script.js}"></script>
+
+</body>
+</html>

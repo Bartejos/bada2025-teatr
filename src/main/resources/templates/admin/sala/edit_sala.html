@@ -1,13 +1,20 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html lang="en"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
       xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8"/>
-  <title>Error Page</title>
+  <meta charset="UTF-8">
+  <title>Edycja sali</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-      /* Flexbox for footer at bottom */
+      .nav-item.active .nav-link {
+          color: #fff !important;
+          font-weight: bold;
+          background-color: rgba(255, 255, 255, 0.1);
+          border-radius: 0.25rem;
+      }
+
+      /* Ensure that the content fills the available space */
       html, body {
           height: 100%;
       }
@@ -42,7 +49,7 @@
         <li class="nav-item" sec:authorize="hasRole('ADMIN')">
           <a class="nav-link" th:href="@{/main_admin/adres}">Adresy</a>
         </li>
-        <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+        <li class="nav-item active" sec:authorize="hasRole('ADMIN')">
           <a class="nav-link" th:href="@{/main_admin/sala}">Sale</a>
         </li>
         <li class="nav-item" sec:authorize="hasRole('ADMIN')">
@@ -71,16 +78,65 @@
   </div>
 </nav>
 
-<div class="container content">
-  <div class="row">
-    <div class="col-md-4 mt-5">
-      <form method="post" th:action="@{/index}">
-        <div class="form-group">
-          <div><b><p style="font-size:30px">Error</p></b></div>
-          <div><p style="font-size:24px">500 - Internal Server Error</p></div>
+<div class="container mt-5 content">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="text-center mb-0">Edytuj salę</h3>
         </div>
-        <button class="btn btn-primary" type="submit">Powrót do strony głównej</button>
-      </form>
+        <div class="card-body">
+          <form action="#" method="post" th:action="@{/main_admin/sala/update}" th:object="${sala}">
+            <div class="mb-3">
+              <label class="form-label">ID sali:</label>
+              <input class="form-control" readonly th:field="*{idSali}" type="text">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Nazwa:</label>
+              <input
+                class="form-control"
+                pattern="^[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ\s]+$"
+                required
+                th:field="*{nazwa}"
+                title="Podaj tylko litery (w tym polskie znaki) i spacje"
+                type="text">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Ilość miejsc:</label>
+              <input
+                class="form-control"
+                min="1"
+                required
+                th:field="*{iloscMiejsc}"
+                type="number">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Szerokość sceny:</label>
+              <input
+                class="form-control"
+                max="99.9"
+                min="0.1"
+                required
+                step="0.1"
+                th:field="*{szerokoscSceny}"
+                type="number">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Teatr:</label>
+              <select class="form-control" required th:field="*{idTeatru}">
+                <option th:each="teatr: ${teatrList}"
+                        th:text="${teatr.nazwa + ', własciciel: ' + teatr.wlasciciel}"
+                        th:value="${teatr.idTeatru}">
+                </option>
+              </select>
+            </div>
+            <div class="text-center">
+              <button class="btn btn-primary" type="submit">Zapisz</button>
+              <a class="btn btn-secondary" th:href="@{/main_admin/sala}">Anuluj</a>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -88,7 +144,7 @@
 <!-- Footer -->
 <footer class="bg-dark text-light py-3">
   <div class="container text-center">
-    <p>© 2025 Teatr Główny. Wszelkie prawa zastrzeżone.</p>
+    <p>© 2025 Teatr Główny. Panel administracyjny.</p>
   </div>
 </footer>
 

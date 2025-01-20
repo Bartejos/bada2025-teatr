@@ -2,15 +2,19 @@ package com.teatr;
 
 import jakarta.persistence.*;
 
+import java.math.BigInteger;
+
 @Entity
 public class Adres {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idAdresu;
+    private BigInteger idAdresu;
     private String ulica;
     private String miasto;
     private String kodPocztowy;
+    private String numerDomu;
+    private String numerMieszkania;
 
     @Override
     public String toString() {
@@ -18,11 +22,11 @@ public class Adres {
     }
 
     // Gettery i Settery
-    public int getIdAdresu() {
+    public BigInteger getIdAdresu() {
         return idAdresu;
     }
 
-    public void setIdAdresu(int idAdresu) {
+    public void setIdAdresu(BigInteger idAdresu) {
         this.idAdresu = idAdresu;
     }
 
@@ -48,5 +52,21 @@ public class Adres {
 
     public void setKodPocztowy(String kodPocztowy) {
         this.kodPocztowy = kodPocztowy;
+    }
+
+    public String getNumerDomu() {
+        return numerDomu;
+    }
+
+    public void setNumerDomu(String numerDomu) {
+        this.numerDomu = numerDomu;
+    }
+
+    public String getNumerMieszkania() {
+        return numerMieszkania;
+    }
+
+    public void setNumerMieszkania(String numerMieszkania) {
+        this.numerMieszkania = numerMieszkania;
     }
 }

@@ -212,6 +212,7 @@
               <img alt="Spektakl" class="card-img-top" src="https://www.svgrepo.com/show/359893/theatre.svg">
               <div class="date-badge" th:text="${#temporals.format(spektakl.dataRozpoczecia, 'dd.MM.yyyy')}">Data</div>
               <div class="teatr-badge"
+                   th:data-teatr-id="${spektakl.idTeatru}"
                    th:text="${teatrMap.get(spektakl.idTeatru)?.nazwa ?: 'Nieznany teatr'}">
                 Nazwa teatru
               </div>
@@ -237,8 +238,8 @@
         </div>
       </div>
       <!-- Komunikat gdy brak spektakli -->
-      <div class="text-center py-5" th:if="${#lists.isEmpty(spektaklList)}">
-        <h4>Brak dostępnych spektakli w wybranym terminie</h4>
+      <div class="text-center py-5" id="no-results-message" style="display: none;">
+        <h4>Brak dostępnych spektakli dla wybranych kryteriów</h4>
         <p>Spróbuj zmienić kryteria wyszukiwania</p>
       </div>
     </div>
@@ -253,20 +254,79 @@
 </footer>
 
 <script>
-    function resetFilters() {
-        document.getElementById('teatrFilter').value = '';
-        document.getElementById('dateFilter').value = '';
-        // Tu możesz dodać wywołanie endpointu do przeładowania spektakli
+    // Get filter elements
+    const teatrFilter = document.getElementById('teatrFilter');
+    const dateFilter = document.getElementById('dateFilter');
+
+    // Function to filter spektakle
+    function filterSpektakle() {
+        const selectedTeatrId = teatrFilter.value;
+        const selectedDate = dateFilter.value;
+
+        // Get all spektakl cards
+        const spektakleCards = document.querySelectorAll('.spektakl-card').forEach(card => {
+            let showCard = true;
+
+            // Filter by theater
+            if (selectedTeatrId) {
+                const teatrBadge = card.querySelector('.teatr-badge');
+                const teatrId = teatrBadge.getAttribute('data-teatr-id');
+                if (teatrId !== selectedTeatrId) {
+                    showCard = false;
+                }
+            }
+
+            // Filter by date
+            if (selectedDate) {
+                const dateBadge = card.querySelector('.date-badge');
+                const spektaklDate = parseDate(dateBadge.textContent);
+                const filterDate = new Date(selectedDate);
+
+                // Check if the spektakl date matches the filter date
+                if (spektaklDate.getDate() !== filterDate.getDate()) {
+                    showCard = false;
+                }
+            }
+
+            // Show/hide card based on filters
+            card.style.display = showCard ? 'block' : 'none';
+        });
+
+        // Show/hide "no results" message
+        const noResultsMessage = document.querySelector('#no-results-message');
+        const visibleCards = document.querySelectorAll('.spektakl-card[style="display: block"]');
+
+        if (noResultsMessage) {
+            noResultsMessage.style.display = visibleCards.length === 0 ? 'block' : 'none';
+        }
     }
 
-    // Możesz dodać obsługę filtrów
-    document.getElementById('teatrFilter').addEventListener('change', function() {
-        // Obsługa filtrowania po teatrze
-    });
+    // Helper function to parse date from Polish format (dd.MM.yyyy)
+    function parseDate(dateStr) {
+        const [day, month, year] = dateStr.split('.');
+        return new Date(year, month - 1, day);
+    }
 
-    document.getElementById('dateFilter').addEventListener('change', function() {
-        // Obsługa filtrowania po dacie
-    });
+    // Function to reset filters
+    function resetFilters() {
+        teatrFilter.value = '';
+        dateFilter.value = '';
+
+        // Show all cards
+        document.querySelectorAll('.spektakl-card').forEach(card => {
+            card.style.display = 'block';
+        });
+
+        // Hide no results message
+        const noResultsMessage = document.querySelector('#no-results-message');
+        if (noResultsMessage) {
+            noResultsMessage.style.display = 'none';
+        }
+    }
+
+    // Add event listeners
+    teatrFilter.addEventListener('change', filterSpektakle);
+    dateFilter.addEventListener('change', filterSpektakle);
 </script>
 
 <script th:src="@{/webjars/jquery/jquery.min.js}"></script>

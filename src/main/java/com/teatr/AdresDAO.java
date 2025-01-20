@@ -25,8 +25,8 @@ public class AdresDAO {
 
     /* Insert – wstawianie nowego wiersza do bazy */
     public void save(Adres adres) {
-        String sql = "INSERT INTO adresy (ulica, miasto, kod_pocztowy) VALUES (?, ?, ?)";
-        jdbcTemplate.update(sql, adres.getUlica(), adres.getMiasto(), adres.getKodPocztowy());
+        String sql = "INSERT INTO adresy (ulica, miasto, kod_pocztowy, numer_domu, numer_mieszkania) VALUES (?, ?, ?, ?, ?)";
+        jdbcTemplate.update(sql, adres.getUlica(), adres.getMiasto(), adres.getKodPocztowy(), adres.getNumerDomu(), adres.getNumerMieszkania());
     }
 
     /* Read – odczytywanie danych z bazy */
@@ -38,13 +38,13 @@ public class AdresDAO {
 
     /* Update – aktualizacja danych */
     public void update(Adres adres) {
-        String sql = "UPDATE adresy SET ulica = ?, miasto = ?, kod_pocztowy = ? WHERE id_adresu = ?";
-        jdbcTemplate.update(sql, adres.getUlica(), adres.getMiasto(), adres.getKodPocztowy(), adres.getIdAdresu());
+        String sql = "UPDATE adresy SET ulica = ?, miasto = ?, kod_pocztowy = ?, numer_domu = ?, numer_mieszkania = ? WHERE id_adresu = ?";
+        jdbcTemplate.update(sql, adres.getUlica(), adres.getMiasto(), adres.getKodPocztowy(), adres.getNumerDomu(), adres.getNumerMieszkania(), adres.getIdAdresu());
     }
 
     /* Delete – wybrany rekord z danym id */
     public void delete(int id) {
-        String sql = "DELETE FROM adresy WHERE id_adresu = ?";
+        String sql = "DELETE FROM ADRESY WHERE ID_ADRESU = ?";
         jdbcTemplate.update(sql, id);
     }
 }

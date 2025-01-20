@@ -8,39 +8,38 @@ public class Bilet {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idBiletu;
+    private Integer idBiletu;
 
-    private double cena;
+    private Float cena;
 
     @Temporal(TemporalType.DATE)
     private Date dataSprzedazy;
 
-    @Column(nullable = false)
     private String typBiletu;
 
-    private int idSpektaklu;
-    private int idWidza;
+    private Integer idSpektaklu;
+
+    private Integer idWidza;
 
     @Override
     public String toString() {
-        return "Bilet [idBiletu=" + idBiletu + ", cena=" + cena + ", dataSprzedazy=" + dataSprzedazy
-                + ", typBiletu=" + typBiletu + ", idSpektaklu=" + idSpektaklu + ", idWidza=" + idWidza + "]";
+        return "Bilet [idBiletu=" + idBiletu + ", cena=" + cena + ", dataSprzedazy=" + dataSprzedazy + ", typBiletu=" + typBiletu + ", idSpektaklu=" + idSpektaklu + ", idWidza=" + idWidza + "]";
     }
 
     // Gettery i Settery
-    public int getIdBiletu() {
+    public Integer getIdBiletu() {
         return idBiletu;
     }
 
-    public void setIdBiletu(int idBiletu) {
+    public void setIdBiletu(Integer idBiletu) {
         this.idBiletu = idBiletu;
     }
 
-    public double getCena() {
+    public Float getCena() {
         return cena;
     }
 
-    public void setCena(double cena) {
+    public void setCena(Float cena) {
         this.cena = cena;
     }
 
@@ -60,19 +59,19 @@ public class Bilet {
         this.typBiletu = typBiletu;
     }
 
-    public int getIdSpektaklu() {
+    public Integer getIdSpektaklu() {
         return idSpektaklu;
     }
 
-    public void setIdSpektaklu(int idSpektaklu) {
+    public void setIdSpektaklu(Integer idSpektaklu) {
         this.idSpektaklu = idSpektaklu;
     }
 
-    public int getIdWidza() {
+    public Integer getIdWidza() {
         return idWidza;
     }
 
-    public void setIdWidza(int idWidza) {
+    public void setIdWidza(Integer idWidza) {
         this.idWidza = idWidza;
     }
 }

@@ -11,14 +11,10 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.SecurityFilterChain;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
-
-    private static final Logger logger = LoggerFactory.getLogger(SecurityConfiguration.class);
 
     @Bean
     public UserDetailsService userDetailsService() {
@@ -39,43 +35,25 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        logger.info("Konfiguracja filtrów bezpieczeństwa...");
         http
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers(
-                                "/",
-                                "/index",
-                                "/resources/static/**",
-                                "/webjars/**",
-                                "/css/**",
-                                "/js/**",
-                                "/images/**",
-                                "/performances_spectator",
-                                "/our_theatre_spectator",
-                                "/my_account_spectator"
-                        ).permitAll() // Publiczne zasoby
-                        .requestMatchers("/performances").permitAll() // Dostęp bez logowania
-
+                        .requestMatchers("/", "/index", "/login", "/static/**", "/webjars/**").permitAll() // Publiczne zasoby
                         .requestMatchers("/main").authenticated() // Autoryzacja wymagana
-                        .requestMatchers("/main_admin").hasRole("ADMIN") // Dostęp tylko dla administratorów
+                        .requestMatchers("/main_admin/**").hasRole("ADMIN") // Dostęp tylko dla administratorów
                         .requestMatchers("/main_spectator").hasRole("SPECTATOR") // Dostęp tylko dla widzów
                         .anyRequest().authenticated() // Wszystkie inne ścieżki wymagają uwierzytelnienia
                 )
                 .formLogin((form) -> form
                         .loginPage("/login") // Niestandardowa strona logowania
-                        .defaultSuccessUrl("/main") // Domyślna strona po zalogowaniu
+                        .defaultSuccessUrl("/main", true) // Domyślna strona po zalogowaniu
                         .permitAll() // Dostęp dla wszystkich do strony logowania
                 )
                 .logout((logout) -> logout
-                        .logoutUrl("/index") // Ścieżka do wylogowania
+                        .logoutUrl("/logout") // Ścieżka do wylogowania
                         .logoutSuccessUrl("/index") // Strona po wylogowaniu
                         .permitAll() // Dostęp dla wszystkich do wylogowania
                 );
 
         return http.build();
     }
-
-
-
-
 }

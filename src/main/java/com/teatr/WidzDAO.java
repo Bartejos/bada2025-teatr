@@ -18,50 +18,24 @@ public class WidzDAO {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    /* List – pobranie wszystkich widzów */
-    public List<Widz> list() {
-        String sql = "SELECT * FROM Widz";
-        return jdbcTemplate.query(sql,
-                BeanPropertyRowMapper.newInstance(Widz.class));
+
+    public void save(Widz widz) {
+        String sql = "INSERT INTO widzowie (imie, nazwisko, adres_email, numer_telefonu, id_teatru, id_adresu) VALUES (?, ?, ?, ?, ?, ?)";
+        jdbcTemplate.update(sql, widz.getImie(), widz.getNazwisko(), widz.getAdresEmail(), widz.getNumerTelefonu(), widz.getIdTeatru(), widz.getIdAdresu());
     }
 
-    /* Insert – wstawianie nowego wiersza do bazy */
-    public void save(Widz Widz) {
-        String sql = "INSERT INTO Widz (imie, nazwisko, adres_email, numer_telefonu, id_teatru, id_adresu) " +
-                "VALUES (?, ?, ?, ?, ?, ?)";
-        jdbcTemplate.update(sql,
-                Widz.getImie(),
-                Widz.getNazwisko(),
-                Widz.getAdresEmail(),
-                Widz.getNumerTelefonu(),
-                Widz.getIdTeatru(),
-                Widz.getIdAdresu());
-    }
-
-    /* Read – odczyt danych dla jednego widza */
     public Widz get(int id) {
-        String sql = "SELECT * FROM Widz WHERE id_widza = ?";
-        return jdbcTemplate.queryForObject(sql,
-                BeanPropertyRowMapper.newInstance(Widz.class), id);
+        String sql = "SELECT * FROM widzowie WHERE id_widza = ?";
+        return jdbcTemplate.queryForObject(sql, BeanPropertyRowMapper.newInstance(Widz.class), id);
     }
 
-    /* Update – aktualizacja danych */
-    public void update(Widz Widz) {
-        String sql = "UPDATE Widz SET imie = ?, nazwisko = ?, adres_email = ?, numer_telefonu = ?, " +
-                "id_teatru = ?, id_adresu = ? WHERE id_widza = ?";
-        jdbcTemplate.update(sql,
-                Widz.getImie(),
-                Widz.getNazwisko(),
-                Widz.getAdresEmail(),
-                Widz.getNumerTelefonu(),
-                Widz.getIdTeatru(),
-                Widz.getIdAdresu(),
-                Widz.getIdWidza());
+    public void update(Widz widz) {
+        String sql = "UPDATE widzowie SET imie = ?, nazwisko = ?, adres_email = ?, numer_telefonu = ?, id_teatru = ?, id_adresu = ? WHERE id_widza = ?";
+        jdbcTemplate.update(sql, widz.getImie(), widz.getNazwisko(), widz.getAdresEmail(), widz.getNumerTelefonu(), widz.getIdTeatru(), widz.getIdAdresu(), widz.getIdWidza());
     }
 
-    /* Delete – usuwanie widza */
     public void delete(int id) {
-        String sql = "DELETE FROM Widz WHERE id_widza = ?";
+        String sql = "DELETE FROM widzowie WHERE id_widza = ?";
         jdbcTemplate.update(sql, id);
     }
 }

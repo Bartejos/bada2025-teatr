@@ -7,36 +7,31 @@ public class Widz {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idWidza;
+    private Integer idWidza;
 
     private String imie;
+
     private String nazwisko;
 
-    @Column(name = "adres_email", nullable = false, length = 70)
     private String adresEmail;
 
-    @Column(name = "numer_telefonu", length = 12)
     private String numerTelefonu;
 
-    @Column(name = "id_teatru", nullable = false)
-    private int idTeatru;
+    private Integer idTeatru;
 
-    @Column(name = "id_adresu", nullable = false)
-    private int idAdresu;
+    private Integer idAdresu;
 
     @Override
     public String toString() {
-        return "Widzowie [idWidza=" + idWidza + ", imie=" + imie + ", nazwisko=" + nazwisko
-                + ", adresEmail=" + adresEmail + ", numerTelefonu=" + numerTelefonu
-                + ", idTeatru=" + idTeatru + ", idAdresu=" + idAdresu + "]";
+        return "Widz [idWidza=" + idWidza + ", imie=" + imie + ", nazwisko=" + nazwisko + ", adresEmail=" + adresEmail + ", numerTelefonu=" + numerTelefonu + ", idTeatru=" + idTeatru + ", idAdresu=" + idAdresu + "]";
     }
 
     // Gettery i Settery
-    public int getIdWidza() {
+    public Integer getIdWidza() {
         return idWidza;
     }
 
-    public void setIdWidza(int idWidza) {
+    public void setIdWidza(Integer idWidza) {
         this.idWidza = idWidza;
     }
 
@@ -72,19 +67,19 @@ public class Widz {
         this.numerTelefonu = numerTelefonu;
     }
 
-    public int getIdTeatru() {
+    public Integer getIdTeatru() {
         return idTeatru;
     }
 
-    public void setIdTeatru(int idTeatru) {
+    public void setIdTeatru(Integer idTeatru) {
         this.idTeatru = idTeatru;
     }
 
-    public int getIdAdresu() {
+    public Integer getIdAdresu() {
         return idAdresu;
     }
 
-    public void setIdAdresu(int idAdresu) {
+    public void setIdAdresu(Integer idAdresu) {
         this.idAdresu = idAdresu;
     }
 }

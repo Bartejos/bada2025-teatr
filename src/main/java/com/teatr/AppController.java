@@ -1,81 +1,292 @@
 package com.teatr;
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
 @Configuration
 @Controller
 public class AppController implements WebMvcConfigurer {
-    private static final Logger logger = LoggerFactory.getLogger(AppController.class);
+    private final AdresDAO adresDAO;
+    private final TeatrDAO teatrDAO;
+    private final SalaDAO salaDAO;
+    private final PracownikDAO pracownikDAO;
+    private final SpektaklDAO spektaklDAO;
+    private final WidzDAO widzDAO;
 
-
-    @Autowired
-    private AdresDAO adresDAO;
+    public AppController(AdresDAO adresDAO, TeatrDAO teatrDAO, SalaDAO salaDAO, PracownikDAO pracownikDAO, SpektaklDAO spektaklDAO, WidzDAO widzDAO) {
+        this.adresDAO = adresDAO;
+        this.teatrDAO = teatrDAO;
+        this.salaDAO = salaDAO;
+        this.pracownikDAO = pracownikDAO;
+        this.spektaklDAO = spektaklDAO;
+        this.widzDAO = widzDAO;
+    }
 
     public void addViewControllers(ViewControllerRegistry registry) {
-        logger.info("Dodawanie kontrolerów widoków...");
         registry.addViewController("/index").setViewName("index");
         registry.addViewController("/").setViewName("index");
         registry.addViewController("/main").setViewName("main");
         registry.addViewController("/login").setViewName("login");
         registry.addViewController("/main_admin").setViewName("admin/main_admin");
         registry.addViewController("/main_spectator").setViewName("spectator/main_spectator");
-        registry.addViewController("/performances").setViewName("spectator/performances_spectator");
-        registry.addViewController("/our_theatre").setViewName("spectator/our_theatre_spectator");
-        registry.addViewController("/my_account").setViewName("spectator/my_account_spectator");
     }
 
     @Controller
     public class DashboardController {
         @RequestMapping("/main")
         public String defaultAfterLogin(HttpServletRequest request) {
-            logger.info("Po zalogowaniu sprawdzam role użytkownika...");
-            if (request.isUserInRole("ADMIN")) {
-                logger.info("Użytkownik ma rolę ADMIN, przekierowywanie do /main_admin");
+            if(request.isUserInRole("ADMIN")) {
                 return "redirect:/main_admin";
-            } else if (request.isUserInRole("SPECTATOR")) {
-                logger.info("Użytkownik ma rolę SPECTATOR, przekierowywanie do /main_spectator");
+            }
+            else if(request.isUserInRole("SPECTATOR")) {
                 return "redirect:/main_spectator";
-            } else {
-                logger.info("Brak roli, przekierowywanie do /index");
+            }
+            else {
                 return "redirect:/index";
             }
         }
     }
 
-    @RequestMapping(value={"/main_admin"})
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ModelAndView handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
+        ModelAndView mav = new ModelAndView("errors/other");
+        mav.addObject("message", "Nie można usunąć rekordu, ponieważ istnieją powiązane dane.");
+        return mav;
+    }
+
+    // WIDOKI ADMINA
+    @RequestMapping("/main_admin")
     public String showAdminPage(Model model) {
-        logger.info("Wyświetlanie strony admina...");
         List<Adres> adresList = adresDAO.list();
         model.addAttribute("adresList", adresList);
         return "admin/main_admin";
     }
+    // TABELA ADRES
+    @RequestMapping("/main_admin/adres")
+    public String showAdresPage(Model model) {
+        List<Adres> adresList = adresDAO.list();
+        model.addAttribute("adresList", adresList);
+        return "admin/adres/adres";
+    }
+    @RequestMapping("/main_admin/adres/new")
+    public String showNewAdresForm(Model model) {
+        model.addAttribute("adres", new Adres());
+        return "admin/adres/new_adres";
+    }
+    @RequestMapping(value = "/main_admin/adres/save", method = RequestMethod.POST)
+    public String saveAdres(@ModelAttribute("adres") Adres adres) {
+        adresDAO.save(adres);
+        return "redirect:/main_admin/adres";
+    }
+    @RequestMapping("/main_admin/adres/edit/{id}")
+    public ModelAndView showEditAdresForm(@PathVariable(name = "id") int id) {
+        ModelAndView mav = new ModelAndView("admin/adres/edit_adres");
+        Adres adres = adresDAO.get(id);
+        mav.addObject("adres", adres);
+        return mav;
+    }
+    @RequestMapping(value = "/main_admin/adres/update", method = RequestMethod.POST)
+    public String updateAdres(@ModelAttribute("adres") Adres adres) {
+        adresDAO.update(adres);
+        return "redirect:/main_admin/adres";
+    }
+    @RequestMapping("/main_admin/adres/delete/{id}")
+    public String deleteAdres(@PathVariable(name = "id") int id, Model model) {
+        try {
+            adresDAO.delete(id);
+        } catch (DataIntegrityViolationException e) {
+            model.addAttribute("message", "Nie można usunąć adresu, ponieważ jest on powiązany z innymi tabelami.");
+            return "errors/other";
+        }
+        return "redirect:/main_admin/adres";
+    }
+
+    // TABELA TEATR
+    @RequestMapping("/main_admin/teatr")
+    public String showTeatrPage(Model model) {
+        List<Teatr> teatrList = teatrDAO.list();
+        model.addAttribute("teatrList", teatrList);
+        return "admin/teatr/teatr";
+    }
+    @RequestMapping("/main_admin/teatr/new")
+    public String showNewTeatrForm(Model model) {
+        model.addAttribute("teatr", new Teatr());
+        model.addAttribute("adresList", adresDAO.list());
+        return "admin/teatr/new_teatr";
+    }
+    @RequestMapping(value = "/main_admin/teatr/save", method = RequestMethod.POST)
+    public String saveTeatr(@ModelAttribute("teatr") Teatr teatr) {
+        teatrDAO.save(teatr);
+        return "redirect:/main_admin/teatr";
+    }
+    @RequestMapping("/main_admin/teatr/edit/{id}")
+    public ModelAndView showEditTeatrForm(@PathVariable(name = "id") int id) {
+        ModelAndView mav = new ModelAndView("admin/teatr/edit_teatr");
+        Teatr teatr = teatrDAO.get(id);
+        mav.addObject("teatr", teatr);
+        mav.addObject("adresList", adresDAO.list());
+        return mav;
+    }
+    @RequestMapping(value = "/main_admin/teatr/update", method = RequestMethod.POST)
+    public String updateTeatr(@ModelAttribute("teatr") Teatr teatr) {
+        teatrDAO.update(teatr);
+        return "redirect:/main_admin/teatr";
+    }
+    @RequestMapping("/main_admin/teatr/delete/{id}")
+    public String deleteTeatr(@PathVariable(name = "id") int id, Model model) {
+        try {
+            teatrDAO.delete(id);
+        } catch (DataIntegrityViolationException e) {
+            model.addAttribute("message", "Nie można usunąć teatru, ponieważ jest on powiązany z innymi tabelami.");
+            return "errors/other";
+        }
+        return "redirect:/main_admin/teatr";
+    }
+
+    // TABELA SALA
+    @RequestMapping("/main_admin/sala")
+    public String showSalaPage(Model model) {
+        List<Sala> salaList = salaDAO.list();
+        model.addAttribute("salaList", salaList);
+        return "admin/sala/sala";
+    }
+    @RequestMapping("/main_admin/sala/new")
+    public String showNewSalaForm(Model model) {
+        model.addAttribute("sala", new Sala());
+        model.addAttribute("teatrList", teatrDAO.list());
+        return "admin/sala/new_sala";
+    }
+    @RequestMapping(value = "/main_admin/sala/save", method = RequestMethod.POST)
+    public String saveSala(@ModelAttribute("sala") Sala sala) {
+        salaDAO.save(sala);
+        return "redirect:/main_admin/sala";
+    }
+    @RequestMapping("/main_admin/sala/edit/{id}")
+    public ModelAndView showEditSalaForm(@PathVariable(name = "id") int id) {
+        ModelAndView mav = new ModelAndView("admin/sala/edit_sala");
+        Sala sala = salaDAO.get(id);
+        mav.addObject("sala", sala);
+        mav.addObject("teatrList", teatrDAO.list());
+        return mav;
+    }
+    @RequestMapping(value = "/main_admin/sala/update", method = RequestMethod.POST)
+    public String updateSala(@ModelAttribute("sala") Sala sala) {
+        salaDAO.update(sala);
+        return "redirect:/main_admin/sala";
+    }
+    @RequestMapping("/main_admin/sala/delete/{id}")
+    public String deleteSala(@PathVariable(name = "id") int id, Model model) {
+        try {
+            salaDAO.delete(id);
+        } catch (DataIntegrityViolationException e) {
+            model.addAttribute("message", "Nie można usunąć sali, ponieważ jest ona powiązana z innymi tabelami.");
+            return "errors/other";
+        }
+        return "redirect:/main_admin/sala";
+    }
+
+    // TABELA PRACOWNIK
+    @RequestMapping("/main_admin/pracownik")
+    public String showPracownikPage(Model model) {
+        List<Pracownik> pracownikList = pracownikDAO.list();
+        model.addAttribute("pracownikList", pracownikList);
+        return "admin/pracownik/pracownik";
+    }
+    @RequestMapping("/main_admin/pracownik/new")
+    public String showNewPracownikForm(Model model) {
+        model.addAttribute("pracownik", new Pracownik());
+        model.addAttribute("teatrList", teatrDAO.list());
+        model.addAttribute("adresList", adresDAO.list());
+        return "admin/pracownik/new_pracownik";
+    }
+    @RequestMapping(value = "/main_admin/pracownik/save", method = RequestMethod.POST)
+    public String savePracownik(@ModelAttribute("pracownik") Pracownik pracownik) {
+        pracownikDAO.save(pracownik);
+        return "redirect:/main_admin/pracownik";
+    }
+    @RequestMapping("/main_admin/pracownik/edit/{id}")
+    public ModelAndView showEditPracownikForm(@PathVariable(name = "id") int id) {
+        ModelAndView mav = new ModelAndView("admin/pracownik/edit_pracownik");
+        Pracownik pracownik = pracownikDAO.get(id);
+        mav.addObject("pracownik", pracownik);
+        mav.addObject("teatrList", teatrDAO.list());
+        mav.addObject("adresList", adresDAO.list());
+        return mav;
+    }
+    @RequestMapping(value = "/main_admin/pracownik/update", method = RequestMethod.POST)
+    public String updatePracownik(@ModelAttribute("pracownik") Pracownik pracownik) {
+        pracownikDAO.update(pracownik);
+        return "redirect:/main_admin/pracownik";
+    }
+    @RequestMapping("/main_admin/pracownik/delete/{id}")
+    public String deletePracownik(@PathVariable(name = "id") int id, Model model) {
+        try {
+            pracownikDAO.delete(id);
+        } catch (DataIntegrityViolationException e) {
+            model.addAttribute("message", "Nie można usunąć pracownika, ponieważ jest on powiązany z innymi tabelami.");
+            return "errors/other";
+        }
+        return "redirect:/main_admin/pracownik";
+    }
+
+    //TABELA SPEKTAKL
+    @RequestMapping("/main_admin/spektakl")
+    public String showSpektaklPage(Model model) {
+        List<Spektakl> spektaklList = spektaklDAO.list();
+        model.addAttribute("spektaklList", spektaklList);
+        return "admin/spektakl/spektakl";
+    }
+    @RequestMapping("/main_admin/spektakl/new")
+    public String showNewSpektaklForm(Model model) {
+        model.addAttribute("spektakl", new Spektakl());
+        return "admin/spektakl/new_spektakl";
+    }
+    @RequestMapping(value = "/main_admin/spektakl/save", method = RequestMethod.POST)
+    public String saveSpektakl(@ModelAttribute("spektakl") Spektakl spektakl) {
+        spektaklDAO.save(spektakl);
+        return "redirect:/main_admin/spektakl";
+    }
+    @RequestMapping("/main_admin/spektakl/edit/{id}")
+    public ModelAndView showEditSpektaklForm(@PathVariable(name = "id") int id) {
+        ModelAndView mav = new ModelAndView("admin/spektakl/edit_spektakl");
+        Spektakl spektakl = spektaklDAO.get(id);
+        mav.addObject("spektakl", spektakl);
+        return mav;
+    }
+    @RequestMapping(value = "/main_admin/spektakl/update", method = RequestMethod.POST)
+    public String updateSpektakl(@ModelAttribute("spektakl") Spektakl spektakl) {
+        spektaklDAO.update(spektakl);
+        return "redirect:/main_admin/spektakl";
+    }
+    @RequestMapping("/main_admin/spektakl/delete/{id}")
+    public String deleteSpektakl(@PathVariable(name = "id") int id, Model model) {
+        try {
+            spektaklDAO.delete(id);
+        } catch (DataIntegrityViolationException e) {
+            model.addAttribute("message", "Nie można usunąć spektakl, ponieważ jest on powiązany z innymi tabelami.");
+            return "errors/other";
+        }
+        return "redirect:/main_admin/spektakl";
+    }
+
 
     @RequestMapping(value={"/main_spectator"})
     public String showUserPage(Model model) {
-        logger.info("Wyświetlanie strony widza...");
         return "spectator/main_spectator";
     }
 
-    @RequestMapping(value = {"/index", "/"})
-    public String showIndexPage(Model model, HttpServletRequest request) {
-        boolean isLoggedIn = request.getUserPrincipal() != null;
-        logger.info("Czy użytkownik jest zalogowany: {}", isLoggedIn);
-        model.addAttribute("isLoggedIn", isLoggedIn);
-        if (isLoggedIn) {
-            model.addAttribute("username", request.getUserPrincipal().getName());
-            logger.info("Zalogowany użytkownik: {}", request.getUserPrincipal().getName());
-        }
-        return "index";
-    }
+
+
+
+
+
 }

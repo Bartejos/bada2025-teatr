@@ -24,13 +24,15 @@ public class AppController implements WebMvcConfigurer {
     private final SalaDAO salaDAO;
     private final PracownikDAO pracownikDAO;
     private final SpektaklDAO spektaklDAO;
+    private final WidzDAO widzDAO;
 
-    public AppController(AdresDAO adresDAO, TeatrDAO teatrDAO, SalaDAO salaDAO, PracownikDAO pracownikDAO, SpektaklDAO spektaklDAO) {
+    public AppController(AdresDAO adresDAO, TeatrDAO teatrDAO, SalaDAO salaDAO, PracownikDAO pracownikDAO, SpektaklDAO spektaklDAO, WidzDAO widzDAO) {
         this.adresDAO = adresDAO;
         this.teatrDAO = teatrDAO;
         this.salaDAO = salaDAO;
         this.pracownikDAO = pracownikDAO;
         this.spektaklDAO = spektaklDAO;
+        this.widzDAO = widzDAO;
     }
 
     public void addViewControllers(ViewControllerRegistry registry) {
@@ -325,8 +327,38 @@ public class AppController implements WebMvcConfigurer {
         return "redirect:/main_admin/spektakl";
     }
 
-    @RequestMapping(value={"/main_spectator"})
-    public String showUserPage(Model model) {
-        return "spectator/main_spectator";
+    @RequestMapping("/main_spectator")
+    public String showSpectatorPage(Model model) {
+        List<Spektakl> spektaklList = spektaklDAO.list(); // Pobranie zaktualizowanej listy spektakli
+        model.addAttribute("spektaklList", spektaklList); // Dodanie listy do modelu
+        return "spectator/main_spectator"; // Zwrócenie widoku
     }
+
+    @GetMapping("/main_spectator/widz")
+    public ModelAndView getUser(Model model) {
+        // Zamiast wywoływać metodę statyczną, używamy instancji DAO wstrzykniętej przez Springa
+        List<Widz> widzowie = widzDAO.list();  // widzDAO to pole wstrzyknięte przez @Autowired
+        ModelAndView mav = new ModelAndView("spectator/widz/add_widz");
+        mav.addObject("teatrList", teatrDAO.list());
+        mav.addObject("adresList", adresDAO.list());
+
+        // Jeśli lista użytkowników nie jest pusta, wybieramy pierwszego
+        if (!widzowie.isEmpty()) {
+            Widz pierwszyWidz = widzowie.get(0); // Pierwszy użytkownik z listy
+            mav.addObject("widz", pierwszyWidz);
+            return mav;
+        } else {
+            mav.addObject("widz", new Widz());
+            return mav;
+        }
+
+
+    }
+
+    @RequestMapping(value = "/main_spectator/widz/save", method = RequestMethod.POST)
+    public String saveWidz(@ModelAttribute("widz") Widz widz) {
+        widzDAO.save(widz);
+        return "redirect:/main_spectator";
+    }
+
 }

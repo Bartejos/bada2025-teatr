@@ -65,43 +65,51 @@
   </div>
 </nav>
 
-<div align="center">
-  <br/>
-  <table border="1" cellpadding="10">
-    <thead>
-    <tr>
-      <th>ID</th>
-      <th>Imię</th>
-      <th>Nazwisko</th>
-      <th>Płeć</th>
-      <th>Stanowisko</th>
-      <th>Numer telefonu</th>
-      <th>Adres email</th>
-      <th>ID teatru</th>
-      <th>ID adresu</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="pracownik: ${pracownikList}">
-      <td th:text="${pracownik.getIdPracownika()}"></td>
-      <td th:text="${pracownik.getImie()}"></td>
-      <td th:text="${pracownik.getNazwisko()}"></td>
-      <td th:text="${pracownik.getPlec()}"></td>
-      <td th:text="${pracownik.getStanowisko()}"></td>
-      <td th:text="${pracownik.getNumerTelefonu()}"></td>
-      <td th:text="${pracownik.getAdresEmail()}"></td>
-      <td th:text="${pracownik.getIdTeatru()}"></td>
-      <td th:text="${pracownik.getIdAdresu()}"></td>
-      <td>
-        <a th:href="@{'/main_admin/pracownik/edit/' + ${pracownik.idPracownika}}">Edytuj</a>
-        &nbsp;&nbsp;&nbsp;&nbsp;
-        <a th:href="@{'/main_admin/pracownik/delete/' + ${pracownik.idPracownika}}">Usuń</a>
-      </td>
-    </tr>
-    </tbody>
-  </table>
-  <br/>
-  <a href="/main_admin/pracownik/new">Dodaj nowego pracownika</a>
+<div class="container mt-5">
+  <div class="card">
+    <div class="card-header">
+      <h3 class="text-center mb-0">Lista adresów</h3>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-striped table-hover">
+          <thead class="table-dark">
+          <tr>
+            <th>ID</th>
+            <th>Imię</th>
+            <th>Nazwisko</th>
+            <th>Płeć</th>
+            <th>Stanowisko</th>
+            <th>Numer telefonu</th>
+            <th>Adres email</th>
+            <th>ID teatru</th>
+            <th>ID adresu</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="pracownik: ${pracownikList}">
+            <td th:text="${pracownik.getIdPracownika()}"></td>
+            <td th:text="${pracownik.getImie()}"></td>
+            <td th:text="${pracownik.getNazwisko()}"></td>
+            <td th:text="${pracownik.getPlec()}"></td>
+            <td th:text="${pracownik.getStanowisko()}"></td>
+            <td th:text="${pracownik.getNumerTelefonu()}"></td>
+            <td th:text="${pracownik.getAdresEmail()}"></td>
+            <td th:text="${pracownik.getIdTeatru()}"></td>
+            <td th:text="${pracownik.getIdAdresu()}"></td>
+            <td>
+              <a th:href="@{'/main_admin/pracownik/edit/' + ${pracownik.idPracownika}}" class="btn btn-primary btn-sm">Edytuj</a>
+              <a th:href="@{'/main_admin/pracownik/delete/' + ${pracownik.idPracownika}}" class="btn btn-danger btn-sm ms-2">Usuń</a>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="text-center mt-3">
+        <a href="/main_admin/pracownik/new" class="btn btn-success">Dodaj nowego pracownika</a>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script th:src="@{/webjars/jquery/jquery.min.js}"></script>

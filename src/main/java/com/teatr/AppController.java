@@ -2,12 +2,10 @@ package com.teatr;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -53,6 +51,14 @@ public class AppController implements WebMvcConfigurer {
             }
         }
     }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ModelAndView handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
+        ModelAndView mav = new ModelAndView("errors/other");
+        mav.addObject("message", "Nie można usunąć rekordu, ponieważ istnieją powiązane dane.");
+        return mav;
+    }
+
     // WIDOKI ADMINA
     @RequestMapping("/main_admin")
     public String showAdminPage(Model model) {
@@ -90,8 +96,13 @@ public class AppController implements WebMvcConfigurer {
         return "redirect:/main_admin/adres";
     }
     @RequestMapping("/main_admin/adres/delete/{id}")
-    public String deleteAdres(@PathVariable(name = "id") int id) {
-        adresDAO.delete(id);
+    public String deleteAdres(@PathVariable(name = "id") int id, Model model) {
+        try {
+            adresDAO.delete(id);
+        } catch (DataIntegrityViolationException e) {
+            model.addAttribute("message", "Nie można usunąć adresu, ponieważ jest on powiązany z innymi tabelami.");
+            return "errors/other";
+        }
         return "redirect:/main_admin/adres";
     }
 
@@ -127,8 +138,13 @@ public class AppController implements WebMvcConfigurer {
         return "redirect:/main_admin/teatr";
     }
     @RequestMapping("/main_admin/teatr/delete/{id}")
-    public String deleteTeatr(@PathVariable(name = "id") int id) {
-        teatrDAO.delete(id);
+    public String deleteTeatr(@PathVariable(name = "id") int id, Model model) {
+        try {
+            teatrDAO.delete(id);
+        } catch (DataIntegrityViolationException e) {
+            model.addAttribute("message", "Nie można usunąć teatru, ponieważ jest on powiązany z innymi tabelami.");
+            return "errors/other";
+        }
         return "redirect:/main_admin/teatr";
     }
 
@@ -164,8 +180,13 @@ public class AppController implements WebMvcConfigurer {
         return "redirect:/main_admin/sala";
     }
     @RequestMapping("/main_admin/sala/delete/{id}")
-    public String deleteSala(@PathVariable(name = "id") int id) {
-        salaDAO.delete(id);
+    public String deleteSala(@PathVariable(name = "id") int id, Model model) {
+        try {
+            salaDAO.delete(id);
+        } catch (DataIntegrityViolationException e) {
+            model.addAttribute("message", "Nie można usunąć sali, ponieważ jest ona powiązana z innymi tabelami.");
+            return "errors/other";
+        }
         return "redirect:/main_admin/sala";
     }
 
@@ -203,8 +224,13 @@ public class AppController implements WebMvcConfigurer {
         return "redirect:/main_admin/pracownik";
     }
     @RequestMapping("/main_admin/pracownik/delete/{id}")
-    public String deletePracownik(@PathVariable(name = "id") int id) {
-        pracownikDAO.delete(id);
+    public String deletePracownik(@PathVariable(name = "id") int id, Model model) {
+        try {
+            pracownikDAO.delete(id);
+        } catch (DataIntegrityViolationException e) {
+            model.addAttribute("message", "Nie można usunąć pracownika, ponieważ jest on powiązany z innymi tabelami.");
+            return "errors/other";
+        }
         return "redirect:/main_admin/pracownik";
     }
 

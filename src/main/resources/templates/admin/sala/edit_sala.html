@@ -1,77 +1,133 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Edycja</title>
+  <title>Edycja sali</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+      .nav-item.active .nav-link {
+          color: #fff !important;
+          font-weight: bold;
+          background-color: rgba(255, 255, 255, 0.1);
+          border-radius: 0.25rem;
+      }
+  </style>
 </head>
 <body>
-<div align="center">
-  <h1>Edytuj salę</h1>
-  <br/>
-  <form action="#" th:action="@{/main_admin/sala/update}" th:object="${sala}" method="post">
-    <table border="1" cellpadding="10">
-      <tr>
-        <td>ID sali:</td>
-        <td>
-          <input
-            type="text"
-            th:field="*{idSali}"
-            readonly
-          >
-        </td>
-      </tr>
-      <tr>
-        <td>Nazwa:</td>
-        <td>
-          <input
-            type="text"
-            th:field="*{nazwa}"
-            required
-            pattern="^[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ\s]+$"
-            title="Podaj tylko litery (w tym polskie znaki) i spacje"
-          >
-        </td>
-      </tr>
-      <tr>
-        <td>Ilość miejsc:</td>
-        <td>
-          <input
-            type="number"
-            min="1"
-            th:field="*{iloscMiejsc}"
-            required
-          >
-        </td>
-      </tr>
-      <tr>
-        <td>Szerokość sceny:</td>
-        <td>
-          <input
-            type="number"
-            step="0.1"
-            min="0.1"
-            max="99.9"
-            th:field="*{szerokoscSceny}"
-            required
-          >
-        </td>
-      </tr>
-      <tr>
-        <td>Teatr:</td>
-        <td>
-          <select th:field="*{idTeatru}" required>
-            <option th:each="teatr: ${teatrList}"
-                    th:value="${teatr.idTeatru}"
-                    th:text="${teatr.nazwa + ', własciciel: ' + teatr.wlasciciel}">
-            </option>
-          </select>
-        </td>
-      </tr>
-      <tr>
-        <td colspan="2"><button type="submit">Zapisz</button></td>
-      </tr>
-    </table>
-  </form>
+
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
+  <div class="container">
+    <a class="navbar-brand" href="/">Teatr Główny</a>
+    <button aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler"
+            data-bs-target="#navbarResponsive"
+            data-bs-toggle="collapse" type="button">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+        <!-- Menu tylko dla admina -->
+        <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+          <a class="nav-link" th:href="@{/main_admin}">Home</a>
+        </li>
+        <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+          <a class="nav-link" th:href="@{/main_admin/adres}">Adresy</a>
+        </li>
+        <li class="nav-item active" sec:authorize="hasRole('ADMIN')">
+          <a class="nav-link" th:href="@{/main_admin/sala}">Sale</a>
+        </li>
+        <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+          <a class="nav-link" th:href="@{/main_admin/pracownik}">Pracownicy</a>
+        </li>
+        <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+          <a class="nav-link" th:href="@{/main_admin/teatr}">Teatry</a>
+        </li>
+      </ul>
+
+      <!-- Przyciski logowania/wylogowania -->
+      <ul class="navbar-nav">
+        <li class="nav-item" sec:authorize="!isAuthenticated()">
+          <a class="nav-link" th:href="@{/login}">Zaloguj się</a>
+        </li>
+        <li class="nav-item" sec:authorize="isAuthenticated()">
+          <form class="d-inline" method="post" th:action="@{/logout}">
+            <button class="btn btn-link nav-link" onclick="successfullyLogout()" type="submit">Wyloguj się</button>
+          </form>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="text-center mb-0">Edytuj salę</h3>
+        </div>
+        <div class="card-body">
+          <form action="#" method="post" th:action="@{/main_admin/sala/update}" th:object="${sala}">
+            <div class="mb-3">
+              <label class="form-label">ID sali:</label>
+              <input class="form-control" readonly th:field="*{idSali}" type="text">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Nazwa:</label>
+              <input
+                class="form-control"
+                pattern="^[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ\s]+$"
+                required
+                th:field="*{nazwa}"
+                title="Podaj tylko litery (w tym polskie znaki) i spacje"
+                type="text">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Ilość miejsc:</label>
+              <input
+                class="form-control"
+                min="1"
+                required
+                th:field="*{iloscMiejsc}"
+                type="number">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Szerokość sceny:</label>
+              <input
+                class="form-control"
+                max="99.9"
+                min="0.1"
+                required
+                step="0.1"
+                th:field="*{szerokoscSceny}"
+                type="number">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Teatr:</label>
+              <select class="form-control" required th:field="*{idTeatru}">
+                <option th:each="teatr: ${teatrList}"
+                        th:text="${teatr.nazwa + ', własciciel: ' + teatr.wlasciciel}"
+                        th:value="${teatr.idTeatru}">
+                </option>
+              </select>
+            </div>
+            <div class="text-center">
+              <button class="btn btn-primary" type="submit">Zapisz</button>
+              <a class="btn btn-secondary" th:href="@{/main_admin/sala}">Anuluj</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
+
+<script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
+<script th:src="@{/js/script.js}"></script>
+
 </body>
 </html>

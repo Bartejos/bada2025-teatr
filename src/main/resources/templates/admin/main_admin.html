@@ -56,7 +56,7 @@
           <a class="nav-link" th:href="@{/login}">Zaloguj się</a>
         </li>
         <li class="nav-item" sec:authorize="isAuthenticated()">
-          <form class="d-inline" method="post" th:action="@{/index}">
+          <form class="d-inline" method="post" th:action="@{/logout}">
             <button class="btn btn-link nav-link" onclick="successfullyLogout()" type="submit">Wyloguj się</button>
           </form>
         </li>
@@ -69,21 +69,21 @@
   <div class="row">
 
     <div class="col-md-10 mt-5">
-      <form method="post" th:action="@{/index}">
+      <form method="post" th:action="@{/logout}">
         <div class="form-group">
-          <label style="font-size:30px" th:inline="text">Welcome <a
+          <label style="font-size:30px" th:inline="text">Witaj <a
                   style="color:lightskyblue; text-transform:capitalize"><b>[[${#authentication.name}]]</b></a>
-            to the main page!</label>
+            na głównej stronie!</label>
           <div class="row">
             <a href="/main_admin/adres">Adresy</a>
             <a href="/main_admin/teatr">Teatry</a>
             <a href="/main_admin/sala">Sale</a>
             <a href="/main_admin/pracownik">Pracownicy</a>
           </div>
-          <div style="font-size:20px">If you want to logout, click "Logout" button under this text.</div>
+          <div style="font-size:20px">Jeśli chcesz się wylogować, kliknij przycisk "Wyloguj" poniżej.</div>
         </div>
 
-        <button class="btn btn-primary" type="submit" onclick="successfullyLogout()" value="Sign Out">Logout
+        <button class="btn btn-primary" type="submit" onclick="successfullyLogout()" value="Sign Out">Wyloguj
         </button>
       </form>
     </div>

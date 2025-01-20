@@ -53,7 +53,7 @@
           <a class="nav-link" th:href="@{/login}">Zaloguj się</a>
         </li>
         <li class="nav-item" sec:authorize="isAuthenticated()">
-          <form class="d-inline" method="post" th:action="@{/index}">
+          <form class="d-inline" method="post" th:action="@{/logout}">
             <button class="btn btn-link nav-link" onclick="successfullyLogout()" type="submit">Wyloguj się</button>
           </form>
         </li>

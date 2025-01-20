@@ -53,7 +53,7 @@
           <a class="nav-link" th:href="@{/login}">Zaloguj się</a>
         </li>
         <li class="nav-item" sec:authorize="isAuthenticated()">
-          <form class="d-inline" method="post" th:action="@{/index}">
+          <form class="d-inline" method="post" th:action="@{/logout}">
             <button class="btn btn-link nav-link" onclick="successfullyLogout()" type="submit">Wyloguj się</button>
           </form>
         </li>
@@ -86,6 +86,7 @@
             <div class="mb-3">
               <label class="form-label">Nazwisko:</label>
               <input
+                class="form-control"
                 maxlength="20"
                 pattern="^[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ\s-]+$"
                 required
@@ -95,7 +96,7 @@
             </div>
             <div class="mb-3">
               <label class="form-label">Płeć:</label>
-              <select required th:field="*{plec}">
+              <select class="form-control" required th:field="*{plec}">
                 <option selected value="M">Wybierz płeć</option>
                 <option value="M">Mężczyzna</option>
                 <option value="K">Kobieta</option>
@@ -103,7 +104,7 @@
             </div>
             <div class="mb-3">
               <label class="form-label">Stanowisko:</label>
-              <select required th:field="*{stanowisko}">
+              <select class="form-control" required th:field="*{stanowisko}">
                 <option selected value="Reżyser">Wybierz stanowisko</option>
                 <option value="Reżyser">Reżyser</option>
                 <option value="Aktor">Aktor</option>
@@ -118,6 +119,7 @@
             <div class="mb-3">
               <label class="form-label">Numer telefonu:</label>
               <input
+                class="form-control"
                 maxlength="12"
                 pattern="^(\+\d{2})?\d{9}$"
                 required
@@ -128,6 +130,7 @@
             <div class="mb-3">
               <label class="form-label">Adres email:</label>
               <input
+                class="form-control"
                 maxlength="70"
                 required
                 th:field="*{adresEmail}"
@@ -135,7 +138,7 @@
             </div>
             <div class="mb-3">
               <label class="form-label">Teatr:</label>
-              <select required th:field="*{idTeatru}">
+              <select class="form-control" required th:field="*{idTeatru}">
                 <option selected th:value="${teatrList[0].idTeatru}">Wybierz teatr</option>
                 <option th:each="teatr: ${teatrList}"
                         th:text="${teatr.nazwa + ', własciciel: ' + teatr.wlasciciel}"
@@ -145,7 +148,7 @@
             </div>
             <div class="mb-3">
               <label class="form-label">Adres:</label>
-              <select required th:field="*{idAdresu}">
+              <select class="form-control" required th:field="*{idAdresu}">
                 <option selected th:value="${adresList[0].idAdresu}">Wybierz adres</option>
                 <option th:each="adres: ${adresList}"
                         th:text="${adres.ulica + ' ' + adres.numerDomu + '/' + adres.numerMieszkania + ', ' + adres.kodPocztowy + ' ' + adres.miasto}"

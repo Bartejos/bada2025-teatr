@@ -44,7 +44,7 @@ public class AdresDAO {
 
     /* Delete – wybrany rekord z danym id */
     public void delete(int id) {
-        String sql = "DELETE FROM adresy WHERE id_adresu = ?";
+        String sql = "DELETE FROM ADRESY WHERE ID_ADRESU = ?";
         jdbcTemplate.update(sql, id);
     }
 }

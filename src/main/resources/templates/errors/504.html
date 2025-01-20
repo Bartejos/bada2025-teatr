@@ -1,5 +1,7 @@
 <!DOCTYPE HTML>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8"/>
   <title>Error Page</title>
@@ -10,12 +12,45 @@
 <!-- Navigation -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
   <div class="container">
-    <a class="navbar-brand" href="/">BDBT Spring Boot Project - Part II</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
-            aria-controls="navbarResponsive"
-            aria-expanded="false" aria-label="Toggle navigation">
+    <a class="navbar-brand" href="/">Teatr Główny</a>
+    <button aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler"
+            data-bs-target="#navbarResponsive"
+            data-bs-toggle="collapse" type="button">
       <span class="navbar-toggler-icon"></span>
     </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+        <!-- Menu tylko dla admina -->
+        <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+          <a class="nav-link" th:href="@{/main_admin}">Home</a>
+        </li>
+        <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+          <a class="nav-link" th:href="@{/main_admin/adres}">Adresy</a>
+        </li>
+        <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+          <a class="nav-link" th:href="@{/main_admin/sala}">Sale</a>
+        </li>
+        <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+          <a class="nav-link" th:href="@{/main_admin/pracownik}">Pracownicy</a>
+        </li>
+        <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+          <a class="nav-link" th:href="@{/main_admin/teatr}">Teatry</a>
+        </li>
+      </ul>
+
+      <!-- Przyciski logowania/wylogowania -->
+      <ul class="navbar-nav">
+        <li class="nav-item" sec:authorize="!isAuthenticated()">
+          <a class="nav-link" th:href="@{/login}">Zaloguj się</a>
+        </li>
+        <li class="nav-item" sec:authorize="isAuthenticated()">
+          <form class="d-inline" method="post" th:action="@{/logout}">
+            <button class="btn btn-link nav-link" onclick="successfullyLogout()" type="submit">Wyloguj się</button>
+          </form>
+        </li>
+      </ul>
+    </div>
   </div>
 </nav>
 
@@ -25,9 +60,9 @@
       <form method="post" th:action="@{/index}">
         <div class="form-group">
           <div><b><p style="font-size:30px">Error</p></b></div>
-          <div><p style="font-size:24px">504 – Gateway Timeout</p></div>
+          <div><p style="font-size:24px">504 - Gateway Timeout</p></div>
         </div>
-        <button class="btn btn-primary" type="submit" value="Sign In">Back to home page</button>
+        <button class="btn btn-primary" type="submit">Powrót do strony głównej</button>
       </form>
     </div>
   </div>
@@ -35,5 +70,7 @@
 
 <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
+<script th:src="@{/js/script.js}"></script>
+
 </body>
 </html>
